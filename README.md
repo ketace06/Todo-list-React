@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Todo-list-React
-=======
 # Rsbuild project
 
 ## Setup
@@ -30,4 +27,3 @@ Preview the production build locally:
 ```bash
 pnpm preview
 ```
->>>>>>> master
