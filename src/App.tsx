@@ -1,13 +1,22 @@
 import './App.css';
 import React from 'react';
 
-const App = () => {
+const TodoApp = () => {
   return (
-    <div className="content">
-      <h1>Rsbuild with React</h1>
-      <p>Start building amazing things with Rsbuild.</p>
+    <div className="todo-app">
+      <h1>Todo List</h1>
+      <form className="todo-form">
+        <input type="text" placeholder="Add a new todo" />
+        <button type="submit">Add</button>
+      </form>
+      <ul className="todo-list">
+        {}
+      </ul>
+      <div className="todo-footer">
+        {}
+      </div>
     </div>
   );
 };
 
-export default App;
+export default TodoApp;
