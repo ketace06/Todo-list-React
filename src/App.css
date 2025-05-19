@@ -43,9 +43,9 @@ p {
 }
 
 .title {
-	position: relative;
-	bottom: 275px;
-	right: 800;
+	position: fixed;
+	top: 75px;
+	left: 100px;
 }
 
 .todo-app {
