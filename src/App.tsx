@@ -13,7 +13,7 @@ const TodoApp = () => {
         {}
       </ul>
       <div className="todo-footer">
-        {}
+        <p>Just do it!</p>
       </div>
     </div>
   );
