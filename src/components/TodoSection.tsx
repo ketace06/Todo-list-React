@@ -1,6 +1,5 @@
-export default function TodoSection() {
+export const TodoSection = () => {
 	return (
-		<div className="todo-list-section">
 			<div className="add-filter">
 				<button
 					className="simple-button"
@@ -22,6 +21,7 @@ export default function TodoSection() {
 					<option value="etc">Status</option>
 				</select>
 			</div>
-		</div>
 	);
-}
+};
+
+export default TodoSection;

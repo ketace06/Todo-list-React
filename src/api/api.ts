@@ -1,4 +1,4 @@
-export default async function FetchApi() {
+export async function fetchApi() {
   try {
     const response = await fetch(
       'https://api.todos.in.jt-lab.ch/todos',

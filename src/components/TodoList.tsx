@@ -1,4 +1,4 @@
-export default function TodoList() {
+export const TodoList = () => {
 	return (
 		<ul className="todo-list">
 			<h2>Recently added</h2>
@@ -36,4 +36,6 @@ export default function TodoList() {
 			</li>
 		</ul>
 	);
-}
+};
+
+export default TodoList;

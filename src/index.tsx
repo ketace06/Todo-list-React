@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import TodoApp from "./App";
-import FetchApi from "./api/Api";
-FetchApi();
+import TodoApp from "./TodoApp";
+import './assets/App.css'
+import { fetchApi } from "./api/api";
+fetchApi()
 
 const rootEl = document.getElementById("root");
 if (rootEl) {

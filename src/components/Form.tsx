@@ -1,4 +1,4 @@
-export default function Form() {
+export const TodoForm = () => {
 	return (
 		<form className="todo-form-popup">
 			<h1>Create Task</h1>
@@ -40,4 +40,6 @@ export default function Form() {
 			</button>
 		</form>
 	);
-}
+};
+
+export default TodoForm;
