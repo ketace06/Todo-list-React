@@ -5,7 +5,9 @@ const TodoList = ({
 	todos,
 	onDeleteTodo,
 	onEditTodo,
-}: Omit<Props, "onAddTodo">) => {
+}: Omit<Props, "onAddTodo"> & {
+	onToggleDone: (id: number, done: boolean) => void;
+}) => {
 	const sortedTodos = todos.slice().reverse();
 
 	return (
@@ -14,7 +16,12 @@ const TodoList = ({
 				<h2>Recently added</h2>
 				{sortedTodos.map((todo) => (
 					<li className="task-item" key={todo.id}>
-						<input className="checkboxes" type="checkbox" />
+						<input
+							className="checkboxes"
+							type="checkbox"
+							checked={!!todo.done}
+							onChange={(e) => onEditTodo({ ...todo, done: e.target.checked })}
+						/>
 						<div className="task-info">
 							<span className="task-title">{todo.title}</span>
 							<span className="due-date">Due: {todo.due_date || "N/A"}</span>

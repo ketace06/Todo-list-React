@@ -38,7 +38,13 @@ const TodoApp = () => {
 					todos={todos}
 					onDeleteTodo={handleDeleteTodo}
 					onEditTodo={async (todo) => {
-						setTodoToEdit(todo);
+						await handleEditTodo(todo.id, todo);
+					}}
+					onToggleDone={(id: number, done: boolean) => {
+						const todo = todos.find((t) => t.id === id);
+						if (todo) {
+							handleEditTodo(id, { ...todo, done });
+						}
 					}}
 				/>
 			</div>
