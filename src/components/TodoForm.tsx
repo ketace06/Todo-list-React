@@ -1,48 +1,35 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-
-type Props = {
-	onAddTodo: (todo: {
-		title: string;
-		due_date?: string;
-		content?: string;
-	}) => Promise<void>;
-};
+import type { Props } from "./Types";
 
 const TodoForm = ({ onAddTodo }: Props) => {
-	const [formData, setFormData] = useState({
-		title: "",
-		category: "",
-		date: "",
-		content: "",
-	});
+	const [title, setTitle] = useState("");
+	const [date, setDate] = useState("");
+	const [content, setContent] = useState("");
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-	) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
-
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		if (!formData.title.trim()) return;
+		if (!title.trim()) return;
 
 		await onAddTodo({
-			title: formData.title.trim(),
-			due_date: formData.date || undefined,
-			content: formData.content || undefined,
+			title: title.trim(),
+			due_date: date || undefined,
+			content: content || undefined,
 		});
 
-		setFormData({ title: "", category: "", date: "", content: "" });
+		setTitle("");
+		setDate("");
+		setContent("");
 	};
+
 	return (
 		<form className="todo-form-popup" onSubmit={handleSubmit}>
-			<h1>Create Task</h1>
-
+			<div className="title-formclose-btn">
+				<h1>Create Task</h1>
+				<button type="button" className="close-btn">
+					❌
+				</button>
+			</div>
 			<div className="form">
 				<p className="p-form">Title*</p>
 				<input
@@ -51,22 +38,9 @@ const TodoForm = ({ onAddTodo }: Props) => {
 					name="title"
 					placeholder="What will you do?"
 					autoComplete="off"
-					value={formData.title}
-					onChange={handleChange}
+					value={title}
+					onChange={(e) => setTitle(e.target.value)}
 					required
-				/>
-			</div>
-
-			<div className="form">
-				<p className="p-form">Category</p>
-				<input
-					className="input-text"
-					type="text"
-					name="category"
-					placeholder="Choose a category"
-					autoComplete="off"
-					value={formData.category}
-					onChange={handleChange}
 				/>
 			</div>
 
@@ -76,8 +50,8 @@ const TodoForm = ({ onAddTodo }: Props) => {
 					className="input-text"
 					type="date"
 					name="date"
-					value={formData.date}
-					onChange={handleChange}
+					value={date}
+					onChange={(e) => setDate(e.target.value)}
 				/>
 			</div>
 
@@ -88,8 +62,8 @@ const TodoForm = ({ onAddTodo }: Props) => {
 					name="content"
 					placeholder="Add a description"
 					autoComplete="off"
-					value={formData.content}
-					onChange={handleChange}
+					value={content}
+					onChange={(e) => setContent(e.target.value)}
 				/>
 			</div>
 

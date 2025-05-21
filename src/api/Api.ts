@@ -1,3 +1,5 @@
+import type { NewTodo, Todo } from "../components/Types"
+
 const API_URL = 'https://api.todos.in.jt-lab.ch/todos'
 
 function handleApiError(response: Response) {
@@ -6,28 +8,27 @@ function handleApiError(response: Response) {
   }
 }
 
-export async function fetchApi() {
-  const res = await fetch(API_URL, {
-    method: 'GET',
-    headers: {
+const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-    },
+    }
+
+export async function fetchApi() : Promise<Todo[]> {
+  const res = await fetch(API_URL, {
+    method: 'GET',
+    headers,
   })
-  await handleApiError(res)
+  handleApiError(res)
   return res.json()
 }
 
-export async function addTodo(todo: { title: string; due_date?: string; content?: string; }) {
+export async function addTodo(todo: NewTodo){
   const res = await fetch(API_URL, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(todo),
   })
-  await handleApiError(res)
+  handleApiError(res)
 }
 
 export async function deleteTodo(id: string) {

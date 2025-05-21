@@ -1,20 +1,13 @@
-type Todo = {
-	id: number | string;
-	title: string;
-	due_date?: string;
-	content?: string;
-};
+import type { Props } from "../components/Types"
 
-type Props = {
-	todos: Todo[];
-};
+const TodoList = ({ todos, onDeleteTodo}: Props) => {
+	const sortedTodos = todos.slice().reverse();
 
-const TodoList = ({ todos }: Props) => {
 	return (
 		<div>
 			<ul className="todo-list">
 				<h2>Recently added</h2>
-				{todos.map((todo) => (
+				{sortedTodos.map((todo) => (
 					<li className="task-item" key={todo.id}>
 						<input className="checkboxes" type="checkbox" />
 						<div className="task-info">
@@ -25,7 +18,11 @@ const TodoList = ({ todos }: Props) => {
 							</span>
 						</div>
 						<div className="delete-edit-button">
-							<button className="Delete" type="button">
+							<button
+								className="Delete"
+								type="button"
+								onClick={() => onDeleteTodo(todo.id)}
+							>
 								🗑️
 							</button>
 							<button className="Edit" type="button">
