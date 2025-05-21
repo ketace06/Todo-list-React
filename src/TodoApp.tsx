@@ -1,41 +1,38 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoSection from "./components/TodoSection";
-import TodoFooter from "./components/TodoFooter";
 import TodoList from "./components/TodoList";
-import { fetchApi, addTodo } from "./api/Api";
+import DayNightToggle from "./components/DayNightToogle";
+import { useTodos } from "./components/CustomHook";
 
 const TodoApp = () => {
-	const [todos, setTodos] = useState([]);
-
-	const loadTodos = useCallback(async () => {
-		const data = await fetchApi();
-		setTodos(data);
-	}, []);
+	const [isDarkMode, setIsDarkMode] = useState(
+		window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false,
+	);
+	const { todos, handleAddTodo, handleDeleteTodo } = useTodos();
 
 	useEffect(() => {
-		loadTodos();
-	}, [loadTodos]);
+		document.body.classList.toggle("dark-mode", isDarkMode);
+	}, [isDarkMode]);
 
-	const handleAddTodo = async (newTodo: {
-		title: string;
-		due_date?: string;
-		content?: string;
-	}) => {
-		await addTodo(newTodo);
-		await loadTodos();
-	};
+	const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
 	return (
 		<div className="todo-app">
-			<TodoForm onAddTodo={handleAddTodo} />
+			<DayNightToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+			<TodoForm
+				todos={todos}
+				onAddTodo={handleAddTodo}
+				onDeleteTodo={handleDeleteTodo}
+			/>
 			<div className="todo-list-section">
 				<TodoSection />
-				<TodoList todos={todos} />
+				<TodoList
+					todos={todos}
+					onAddTodo={handleAddTodo}
+					onDeleteTodo={handleDeleteTodo}
+				/>
 			</div>
-			<TodoFooter />
-			<h1 className="title">TODO LIST</h1>
-			<p className="ErrorText">Error: don't do that!</p>
 		</div>
 	);
 };
