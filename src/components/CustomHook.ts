@@ -23,8 +23,8 @@ export const useTodos = () => {
 		loadTodos();
 	};
 	const handleEditTodo = async (id: number, updatedTodo: NewTodo) => {
-		const { title, due_date, content } = updatedTodo;
-		await editTodo({ title, due_date, content }, id);
+		const { title, due_date, content, done } = updatedTodo;
+		await editTodo({ title, due_date, content, done }, id);
 		loadTodos();
 	};
 	return { todos, handleAddTodo, handleDeleteTodo, handleEditTodo};

@@ -3,12 +3,14 @@ export type Todo = {
     title: string;
     due_date?: string;
     content?: string;
+    done?: boolean;
 };
 
 export type NewTodo = {
     title: string;
     due_date?: string;
     content?: string;
+    done?: boolean; 
 };
 
 export type Props = {
