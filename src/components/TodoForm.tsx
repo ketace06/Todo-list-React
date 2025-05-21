@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
-import type { Props } from "./Types";
+import type { Props, Todo } from "./Types";
+import { toggleTodoForm } from "./TodoFormState";
 
-const TodoForm = ({ onAddTodo }: Props) => {
+type TodoFormProps = Props & {
+	todoToEdit?: Todo | null;
+};
+
+const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
 	const [title, setTitle] = useState("");
 	const [date, setDate] = useState("");
 	const [content, setContent] = useState("");
 
+	useEffect(() => {
+		if (todoToEdit) {
+			setTitle(todoToEdit.title || "");
+			setDate(todoToEdit.due_date || "");
+			setContent(todoToEdit.content || "");
+		} else {
+			setTitle("");
+			setDate("");
+			setContent("");
+		}
+	}, [todoToEdit]);
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		if (!title.trim()) return;
-
-		await onAddTodo({
-			title: title.trim(),
-			due_date: date || undefined,
-			content: content || undefined,
-		});
+		if (todoToEdit) {
+			await onEditTodo({
+				id: todoToEdit.id,
+				title: title.trim(),
+				due_date: date || undefined,
+				content: content || undefined,
+			});
+		} else {
+			await onAddTodo({
+				title: title.trim(),
+				due_date: date || undefined,
+				content: content || undefined,
+			});
+		}
 
 		setTitle("");
 		setDate("");
@@ -25,8 +50,12 @@ const TodoForm = ({ onAddTodo }: Props) => {
 	return (
 		<form className="todo-form-popup" onSubmit={handleSubmit}>
 			<div className="title-formclose-btn">
-				<h1>Create Task</h1>
-				<button type="button" className="close-btn">
+				<h1>{todoToEdit ? "Modify Task" : "Create Task"}</h1>
+				<button
+					type="button"
+					className="close-btn"
+					onClick={() => toggleTodoForm(false)}
+				>
 					❌
 				</button>
 			</div>
@@ -68,11 +97,7 @@ const TodoForm = ({ onAddTodo }: Props) => {
 			</div>
 
 			<button className="simple-button" type="submit">
-				Create
-			</button>
-
-			<button className="simple-button clear-all" type="button">
-				Clear all tasks
+				{todoToEdit ? "Modify" : "Create"}
 			</button>
 		</form>
 	);

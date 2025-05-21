@@ -1,6 +1,11 @@
-import type { Props } from "../components/Types"
+import type { Props } from "../components/Types";
+import { toggleTodoForm } from "./TodoFormState";
 
-const TodoList = ({ todos, onDeleteTodo}: Props) => {
+const TodoList = ({
+	todos,
+	onDeleteTodo,
+	onEditTodo,
+}: Omit<Props, "onAddTodo">) => {
 	const sortedTodos = todos.slice().reverse();
 
 	return (
@@ -25,7 +30,14 @@ const TodoList = ({ todos, onDeleteTodo}: Props) => {
 							>
 								🗑️
 							</button>
-							<button className="Edit" type="button">
+							<button
+								className="Edit"
+								type="button"
+								onClick={() => {
+									toggleTodoForm(true);
+									onEditTodo(todo);
+								}}
+							>
 								✏️
 							</button>
 						</div>

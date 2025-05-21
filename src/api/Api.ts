@@ -34,11 +34,26 @@ export async function addTodo(todo: NewTodo){
 export async function deleteTodo(id: string) {
   const res = await fetch(`${API_URL}?id=eq.${id}`, {
     method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers,
   })
   
-  await handleApiError(res)
+  handleApiError(res)
+}
+
+
+
+export async function editTodo(updatedTodo: NewTodo, id: number) {
+  try {
+    await fetch(`${API_URL}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTodo),
+    })
+  
+  } catch (error) {
+    console.error(error)
+  }
 }

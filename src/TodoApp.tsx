@@ -4,12 +4,14 @@ import TodoSection from "./components/TodoSection";
 import TodoList from "./components/TodoList";
 import DayNightToggle from "./components/DayNightToogle";
 import { useTodos } from "./components/CustomHook";
+import type { Todo } from "./components/Types";
 
 const TodoApp = () => {
+	const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
 	const [isDarkMode, setIsDarkMode] = useState(
-		window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false,
+		window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
 	);
-	const { todos, handleAddTodo, handleDeleteTodo } = useTodos();
+	const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
 
 	useEffect(() => {
 		document.body.classList.toggle("dark-mode", isDarkMode);
@@ -21,16 +23,23 @@ const TodoApp = () => {
 		<div className="todo-app">
 			<DayNightToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 			<TodoForm
-				todos={todos}
 				onAddTodo={handleAddTodo}
+				todoToEdit={todoToEdit}
+				onEditTodo={async (updatedTodo) => {
+					await handleEditTodo(updatedTodo.id, updatedTodo);
+				}}
+				todos={todos}
 				onDeleteTodo={handleDeleteTodo}
 			/>
+
 			<div className="todo-list-section">
-				<TodoSection />
+				<TodoSection onAddTaskClick={() => setTodoToEdit(null)} />
 				<TodoList
 					todos={todos}
-					onAddTodo={handleAddTodo}
 					onDeleteTodo={handleDeleteTodo}
+					onEditTodo={async (todo) => {
+						setTodoToEdit(todo);
+					}}
 				/>
 			</div>
 		</div>

@@ -288,6 +288,7 @@ select {
 	transition: border-color 0.2s;
 	resize: none;
 	color: #1c1c1e;
+	
 }
 
 .input-text:focus,
@@ -295,7 +296,6 @@ select {
 	border-color: var(--primary-color);
 	outline: none;
 }
-
 .p-form {
 	color: var(--secondary-color);
 }
@@ -323,6 +323,7 @@ select {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	
 }
 
 .todo-list {
