@@ -1,6 +1,7 @@
 html {
 	user-select: none;
 	background: var(--background-color);
+	overflow: hidden;
 }
 
 body {
@@ -88,7 +89,7 @@ button {
 }
 
 .todo-form-popup {
-	display: flex;
+	display: none;
 	position: fixed;
 	flex-direction: column;
 	gap: 20px;
@@ -145,8 +146,7 @@ button {
 }
 
 .todo-list-section {
-	width: 80%;
-	margin: 0 auto;
+	width: 70%;
 }
 
 .checkboxes {
@@ -165,17 +165,41 @@ button {
 	flex-direction: column;
 	background-color: var(--secondary-color);
 	border-radius: 15px;
-	padding: 20px;
+	padding: 25px 45px;
 	gap: 25px;
+	max-height: 60vh;
+	box-sizing: border-box;
+	overflow-y: auto;
+	
 }
+.todo-list {
+	scrollbar-color: var(--primary-color) var(--third-color);
+}
+
+.todo-list::-webkit-scrollbar {
+	width: 10px;
+	background: var(--third-color);
+	border-radius: 8px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+	background: var(--primary-color);
+	border-radius: 8px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+	background: var(--secondary-color);
+}
+
 .task-item {
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	padding: 25px;
 	background-color: white;
 	gap: 20px;
 	border-radius: 5px;
+	max-width: 100%;
+	box-sizing: border-box;
+	word-break: break-word;
 }
 
 .task-info {
