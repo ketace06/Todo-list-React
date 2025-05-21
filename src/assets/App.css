@@ -11,7 +11,7 @@
 	--background-color: #18191a;
 	--primary-color: #2196f3;
 	--secondary-color: #23272f;
-	--border-color: #33343a;
+	--border-color: #444654;
 	--third-color: #23272f;
 	--warning-color: #ff3b30;
 }
@@ -59,6 +59,14 @@ body.dark-mode,
 	color: #fff;
 }
 
+.dark-mode .p-form {
+	color: white;
+}
+
+.p-form {
+	color: black;
+}
+
 html {
 	user-select: none;
 	background: var(--background-color);
@@ -74,12 +82,11 @@ body {
 	background: var(--background-color);
 }
 .switch {
-	position: absolute;
+	position: relative;
 	display: inline-block;
 	width: 120px;
 	height: 34px;
-	top: 20px;
-	right: 0;
+	margin: 20px;
 }
 
 .switch input {
@@ -235,11 +242,6 @@ select {
 	transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.todo-form-popup.show {
-	opacity: 1;
-	transform: translateY(0) scale(1);
-}
-
 .title-formclose-btn {
 	display: flex;
 	flex-direction: row;
@@ -296,10 +298,6 @@ select {
 	outline: none;
 }
 
-.p-form {
-	color: var(--secondary-color);
-}
-
 .clear-all {
 	background-color: var(--warning-color);
 	color: white;
@@ -332,7 +330,7 @@ select {
 	border-radius: 22px;
 	padding: 28px 36px;
 	gap: 18px;
-	max-height: 60vh;
+	max-height: 500px;
 	box-shadow: 0 4px 24px rgba(60, 60, 67, 0.08);
 	overflow-y: auto;
 	scrollbar-width: thin;
@@ -406,4 +404,86 @@ select {
 	bottom: 20px;
 	font-weight: 600;
 	box-shadow: 0 4px 16px rgba(255, 59, 48, 0.15);
+}
+
+@media (max-width: 1500px) {
+	.todo-app {
+		margin: 0 10px;
+	}
+
+	.todo-form-popup {
+		width: 55vw;
+		max-width: 98vw;
+		margin: auto;
+		box-sizing: border-box;
+		left: 0;
+		right: 0;
+	}
+	.todo-form-popup {
+		width: 55vw;
+		max-width: 98vw;
+		margin: auto;
+		padding: 30px;
+		box-sizing: border-box;
+		left: 0;
+		right: 0;
+	}
+}
+
+@media (max-width: 1200px) {
+	.todo-app {
+		margin: 0 10px;
+	}
+
+	.todo-form-popup {
+		width: 55vw;
+		margin: auto;
+		box-sizing: border-box;
+		left: 0;
+		right: 0;
+	}
+}
+
+@media (max-width: 600px) {
+	.todo-app {
+		margin: 0;
+		padding: 0 8px;
+	}
+	.todo-list {
+		padding: 8px 4px;
+		max-height: 500px;
+	}
+	.task-item {
+		flex-direction: column;
+		gap: 10px;
+		align-items: flex-start;
+	}
+	.add-filter {
+		flex-direction: column;
+		align-items: center;
+	}
+	.todo-form-popup {
+		width: 95vw;
+		max-width: 98vw;
+		margin: auto;
+		padding: 30px;
+		box-sizing: border-box;
+		left: 0;
+		right: 0;
+	}
+}
+
+@media (max-width: 400px) {
+	.todo-form-popup {
+		padding: 8px 4px;
+	}
+	.task-item {
+		padding: 6px 4px;
+	}
+	.todo-list {
+		padding: 4px 2px;
+	}
+	.todo-form-popup {
+		padding: 30;
+	}
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchApi, addTodo, deleteTodo } from "../api/Api";
+import { fetchApi, addTodo, deleteTodo, editTodo} from "../api/Api";
 import type { NewTodo, Todo } from "../components/Types";
 
 export const useTodos = () => {
@@ -22,6 +22,10 @@ export const useTodos = () => {
 		await deleteTodo(id.toString());
 		loadTodos();
 	};
-
-	return { todos, handleAddTodo, handleDeleteTodo };
+	const handleEditTodo = async (id: number, updatedTodo: NewTodo) => {
+		const { title, due_date, content } = updatedTodo;
+		await editTodo({ title, due_date, content }, id);
+		loadTodos();
+	};
+	return { todos, handleAddTodo, handleDeleteTodo, handleEditTodo};
 };
