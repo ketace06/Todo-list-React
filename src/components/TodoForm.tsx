@@ -45,6 +45,7 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
 		setTitle("");
 		setDate("");
 		setContent("");
+		toggleTodoForm(false);
 	};
 
 	return (
