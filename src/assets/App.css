@@ -442,6 +442,7 @@ select {
 		left: 0;
 		right: 0;
 	}
+}
 
 @media (max-width: 600px) {
 	.todo-app {
