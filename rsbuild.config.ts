@@ -4,6 +4,6 @@ import { pluginReact } from '@rsbuild/plugin-react';
 export default defineConfig({
     plugins: [pluginReact()],
   output: {
-    assetPrefix: '/<https://github.com/ketace06/Todo-list-React>/',
+    assetPrefix: '/Todo-list-React/',
   },
 });

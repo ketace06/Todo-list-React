@@ -1,59 +1,56 @@
-import type { NewTodo, Todo } from "../components/Types"
+import type { NewTodo, Todo } from "../components/Types";
 
-const API_URL = 'https://api.todos.in.jt-lab.ch/todos'
+const API_URL = "https://api.todos.in.jt-lab.ch/todos";
 
 function handleApiError(response: Response) {
   if (!response.ok) {
-    throw new Error(`Error: ${response.status} ${response.statusText}`)
+    throw new Error(`Error: ${response.status} ${response.statusText}`);
   }
 }
 
 const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    }
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
 
-export async function fetchApi() : Promise<Todo[]> {
+export async function fetchApi(): Promise<Todo[]> {
   const res = await fetch(API_URL, {
-    method: 'GET',
+    method: "GET",
     headers,
-  })
-  handleApiError(res)
-  return res.json()
+  });
+  handleApiError(res);
+  return res.json();
 }
 
-export async function addTodo(todo: NewTodo){
+export async function addTodo(todo: NewTodo) {
   const res = await fetch(API_URL, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(todo),
-  })
-  handleApiError(res)
+  });
+  handleApiError(res);
 }
 
 export async function deleteTodo(id: string) {
   const res = await fetch(`${API_URL}?id=eq.${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers,
-  })
-  
-  handleApiError(res)
+  });
+
+  handleApiError(res);
 }
-
-
 
 export async function editTodo(updatedTodo: NewTodo, id: number) {
   try {
     await fetch(`${API_URL}?id=eq.${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(updatedTodo),
-    })
-  
+    });
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
