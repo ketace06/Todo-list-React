@@ -17,5 +17,5 @@ export type Props = {
     todos: Todo[];
     onAddTodo: (todo: NewTodo) => Promise<void>;
     onDeleteTodo: (id: number) => Promise<void>;
-    onEditTodo: (updatedTodo: Todo) => Promise<void>;
+    onEditTodo: (updatedTodo: Todo) => void; 
 };

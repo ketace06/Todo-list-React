@@ -1,13 +1,16 @@
 import type { Props } from "../components/Types";
 import { toggleTodoForm } from "./TodoFormState";
 
+type TodoListProps = Omit<Props, "onAddTodo"> & {
+	onToggleDone: (id: number, done: boolean) => void;
+};
+
 const TodoList = ({
 	todos,
 	onDeleteTodo,
 	onEditTodo,
-}: Omit<Props, "onAddTodo"> & {
-	onToggleDone: (id: number, done: boolean) => void;
-}) => {
+	onToggleDone,
+}: TodoListProps) => {
 	const sortedTodos = todos.slice().reverse();
 
 	return (
@@ -20,7 +23,7 @@ const TodoList = ({
 							className="checkboxes"
 							type="checkbox"
 							checked={!!todo.done}
-							onChange={(e) => onEditTodo({ ...todo, done: e.target.checked })}
+							onChange={(e) => onToggleDone(todo.id, e.target.checked)}
 						/>
 						<div className="task-info">
 							<span className="task-title">{todo.title}</span>
