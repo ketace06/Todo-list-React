@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoBtn from "./components/TodoBtn";
-import TodoListSection from "./components/TodoListSection";
+import TodoListSection, {
+  type SortOptions,
+} from "./components/TodoListSection";
 import DayNightToggle from "./components/DayNightToogle";
 import { useTodos } from "./components/CustomHook";
 import type { Todo } from "./components/Types";
@@ -11,6 +13,7 @@ const TodoApp = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
   );
+  const [sortBy, setSortBy] = useState<SortOptions>("recent");
   const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
@@ -30,8 +33,11 @@ const TodoApp = () => {
         onDeleteTodo={handleDeleteTodo}
       />
       <div className="actions-btn">
-        {" "}
-        <TodoBtn onAddTaskClick={() => setTodoToEdit(null)} />
+        <TodoBtn
+          onAddTaskClick={() => setTodoToEdit(null)}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
       </div>
       <div className="todo-list-section">
         <TodoListSection
@@ -47,6 +53,7 @@ const TodoApp = () => {
               setTodoToEdit(null);
             }
           }}
+          sortBy={sortBy}
         />
       </div>
       <DayNightToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />

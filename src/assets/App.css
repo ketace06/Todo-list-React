@@ -81,7 +81,7 @@ body {
 }
 .switch {
   position: relative;
-  width: 120px;
+  width: 60px;
   height: 34px;
   margin: 0;
   z-index: 1;
@@ -134,6 +134,7 @@ input:checked + .slider:before {
 
 .slider.round {
   border-radius: 34px;
+  width: 60px;
 }
 
 .slider.round:before {
@@ -182,7 +183,6 @@ p {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  margin: 0 150px;
 }
 
 button,
@@ -224,8 +224,8 @@ select {
   padding: 10px;
   font: inherit;
   border-radius: 12px;
-  width: 120px;
-  max-width: 120px;
+  width: 140px;
+  max-width: 140px;
   border: 1px solid var(--border-color);
 }
 
@@ -412,6 +412,16 @@ select {
   top: 20px;
   font-weight: 600;
   z-index: 10;
+}
+
+.sort-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  font-style: italic;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 @media (max-width: 1500px) {
