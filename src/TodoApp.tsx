@@ -12,7 +12,6 @@ const TodoApp = () => {
     window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
   );
   const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
-
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
   }, [isDarkMode]);

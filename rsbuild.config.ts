@@ -1,10 +1,9 @@
-import { defineConfig } from '@rsbuild/core';
-import { pluginReact } from '@rsbuild/plugin-react';
+import { defineConfig } from "@rsbuild/core";
+import { pluginReact } from "@rsbuild/plugin-react";
 
 export default defineConfig({
-    plugins: [pluginReact()],
+  plugins: [pluginReact()],
   output: {
-    assetPrefix: '/Todo-list-React/',
+    assetPrefix: "/Todo-list-React/",
   },
-  
 });
