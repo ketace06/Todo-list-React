@@ -1,4 +1,4 @@
-import type { Props } from "../components/Types";
+import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 
 type TodoListProps = Omit<Props, "onAddTodo"> & {
