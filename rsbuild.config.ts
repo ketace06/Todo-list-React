@@ -6,4 +6,5 @@ export default defineConfig({
   output: {
     assetPrefix: '/Todo-list-React/',
   },
+  
 });
