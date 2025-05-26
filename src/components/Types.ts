@@ -9,14 +9,6 @@ export type Todo = {
 };
 
 export type NewTodo = {
-  title: string;
-  due_date?: string;
-  content?: string;
-  done?: boolean;
-  category_id: string;
-};
-
-export type TodoUpdate = {
   id: number;
   title?: string;
   due_date?: string;
@@ -29,7 +21,7 @@ export type Props = {
   todos: Todo[];
   onAddTodo: (todo: NewTodo) => Promise<void>;
   onDeleteTodo: (id: number) => Promise<void>;
-  onEditTodo: (updatedTodo: TodoUpdate, category_id?: string) => void;
+  onEditTodo: (updatedTodo: NewTodo, category_id?: string) => void;
 };
 
 export type Category = {
