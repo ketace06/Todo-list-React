@@ -1,120 +1,128 @@
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 
-type SortOptions =
-  | "recent"
-  | "date"
-  | "alphabetical"
-  | "status"
-  | "no-todos";
+type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
 type TodoListProps = Omit<Props, "onAddTodo"> & {
-  onToggleDone: (id: number, done: boolean) => void;
-  sortBy: SortOptions;
+	onToggleDone: (id: number, done: boolean) => void;
+	sortBy: SortOptions;
 };
 
 const TodoListSection = ({
-  todos,
-  onDeleteTodo,
-  onEditTodo,
-  onToggleDone,
-  sortBy,
+	todos,
+	onDeleteTodo,
+	onEditTodo,
+	onToggleDone,
+	sortBy,
 }: TodoListProps) => {
-  if (todos.length === 0 && sortBy !== "no-todos") {
-    return (
-      <div>
-        <span className="sort-title">No todos added</span>
-      </div>
-    );
-  }
+	if (todos.length === 0 && sortBy !== "no-todos") {
+		return (
+			<div>
+				<span className="sort-title">No todos added</span>
+			</div>
+		);
+	}
 
-  let filteredTodos = todos.slice();
+	let filteredTodos = todos.slice();
+	let statusTitle = "";
 
-  if (sortBy === "status") {
-    filteredTodos = filteredTodos.filter((todo) => !todo.done);
-  } else {
-    console.log("you done all");
-  }
+	if (sortBy === "status") {
+		filteredTodos = filteredTodos.filter((todo) => !todo.done);
+		if (filteredTodos.length === 0) {
+			statusTitle = "You dit it all!";
+		} else {
+			statusTitle = "Sort by status";
+		}
+	}
+	let dueDateTitle = "";
 
-  if (sortBy === "date") {
-    filteredTodos = filteredTodos.filter((todo) => todo.due_date);
-  }
+	if (sortBy === "date") {
+		filteredTodos = filteredTodos.filter((todo) => todo.due_date);
+		if (filteredTodos.length === 0) {
+			dueDateTitle = "You have no tasks assigned to a date!";
+		} else {
+			dueDateTitle = "Sort by date";
+		}
+	}
 
-  const sortedTodos = filteredTodos.sort((a, b) => {
-    if (sortBy === "recent") {
-      return b.id - a.id;
-    }
-    if (sortBy === "date") {
-      if (!a.due_date) return 1;
-      if (!b.due_date) return -1;
-      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
-    }
-    if (sortBy === "alphabetical") {
-      return a.title.localeCompare(b.title);
-    }
-    if (sortBy === "status") {
-      return b.id - a.id;
-    }
-    return 0;
-  });
+	const sortedTodos = filteredTodos.sort((a, b) => {
+		if (sortBy === "recent") {
+			return b.id - a.id;
+		}
+		if (sortBy === "date") {
+			if (!a.due_date) return 1;
+			if (!b.due_date) return -1;
+			return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+		}
+		if (sortBy === "alphabetical") {
+			return a.title.localeCompare(b.title);
+		}
+		if (sortBy === "status") {
+			return b.id - a.id;
+		}
+		return 0;
+	});
 
-  return (
-    <div>
-      <ul className="todo-list">
-        <span className="sort-title">
-          {sortBy === "recent"
-            ? "Recently added"
-            : sortBy === "date"
-              ? "Sort by due date"
-              : sortBy === "alphabetical"
-                ? "Sort by alphabetical"
-                : sortBy === "status"
-                  ? "Sort by status"
-                  : sortBy === "no-todos"}
-        </span>
-        {sortedTodos.map((todo) => (
-          <li className="task-item" key={todo.id}>
-            <input
-              className="checkboxes"
-              type="checkbox"
-              checked={!!todo.done}
-              onChange={(e) => onToggleDone(todo.id, e.target.checked)}
-            />
-            <div className="task-info">
-              <span className="task-alphabetical">{todo.title}</span>
-              {todo.due_date && (
-                <span className="due-date">Due: {todo.due_date}</span>
-              )}
-              {todo.content && (
-                <span className="description">
-                  Description: {todo.content || "None"}
-                </span>
-              )}
-            </div>
-            <div className="delete-edit-button">
-              <button
-                className="Delete"
-                type="button"
-                onClick={() => onDeleteTodo(todo.id)}
-              >
-                🗑️
-              </button>
-              <button
-                className="Edit"
-                type="button"
-                onClick={() => {
-                  toggleTodoForm(true);
-                  onEditTodo(todo);
-                }}
-              >
-                ✏️
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+	return (
+		<div>
+			<ul className="todo-list">
+				<span className="sort-title">
+					{sortBy === "recent"
+						? "Recently added"
+						: sortBy === "date"
+							? dueDateTitle
+							: sortBy === "alphabetical"
+								? "Sort by alphabetical"
+								: sortBy === "status"
+									? statusTitle
+									: sortBy === "no-todos"
+										? "No todos added"
+										: ""}
+				</span>
+
+				{sortedTodos.map((todo) => (
+					<li className="task-item" key={todo.id}>
+						<input
+							className="checkboxes"
+							type="checkbox"
+							checked={!!todo.done}
+							onChange={(e) => onToggleDone(todo.id, e.target.checked)}
+						/>
+						<div className="task-info">
+							<span className="task-alphabetical">{todo.title}</span>
+							{todo.due_date && (
+								<span className="due-date">Due: {todo.due_date}</span>
+							)}
+							{todo.content && (
+								<span className="description">
+									Description: {todo.content || "None"}
+								</span>
+							)}
+						</div>
+						<div className="delete-edit-button">
+							<button
+								className="Delete"
+								type="button"
+								onClick={() => onDeleteTodo(todo.id)}
+							>
+								🗑️
+							</button>
+							<button
+								className="Edit"
+								type="button"
+								onClick={() => {
+									toggleTodoForm(true);
+									onEditTodo(todo);
+								}}
+							>
+								✏️
+							</button>
+						</div>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
 };
 
 export { TodoListSection, type SortOptions };

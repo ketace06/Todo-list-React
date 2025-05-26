@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoBtn from "./components/TodoBtn";
-import {TodoListSection,
+import {
+  TodoListSection,
   type SortOptions,
 } from "./components/TodoListSection";
 import DayNightToggle from "./components/DayNightToggle";
