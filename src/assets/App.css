@@ -418,10 +418,9 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.3s ease;
+  margin: 30px;
 }
 
 @media (max-width: 1500px) {

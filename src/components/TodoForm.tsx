@@ -38,14 +38,14 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
       await onEditTodo({
         id: todoToEdit.id,
         title: title.trim(),
-        due_date: date || undefined,
-        content: content || undefined,
+        due_date: date || null,
+        content: content || null,
       });
     } else {
       await onAddTodo({
         title: title.trim(),
-        due_date: date || undefined,
-        content: content || undefined,
+        due_date: date || null,
+        content: content || null,
       });
     }
 
