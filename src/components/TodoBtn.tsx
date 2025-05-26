@@ -49,6 +49,27 @@ export const TodoBtn = ({
           Add a Task
         </button>
       </div>
+      <div className="add-btn-responsive">
+        <button
+          className="rounded-btn"
+          type="button"
+          onClick={() => {
+            onAddTaskClick();
+            const form = document.querySelector(
+              ".todo-form-popup",
+            ) as HTMLElement;
+            if (
+              form &&
+              form.style.display !== "flex" &&
+              form.style.opacity !== "1"
+            ) {
+              toggleTodoForm(true);
+            }
+          }}
+        >
+          +
+        </button>
+      </div>
       <select
         className="select-filter"
         value={sortBy}
