@@ -1,4 +1,9 @@
-import type { NewTodo, Todo, Category, CategoryInsert } from "../components/Types";
+import type {
+  NewTodo,
+  Todo,
+  Category,
+  CategoryInsert,
+} from "../components/Types";
 
 const API_URL = "https://api.todos.in.jt-lab.ch/todos";
 const API_URL_CATEGORY = "https://api.todos.in.jt-lab.ch/categories";
@@ -22,7 +27,8 @@ export async function fetchApi(): Promise<Todo[]> {
   );
   handleApiError(res);
 
-  const rawTodos: (Todo & { categories_todos?: { category: Category }[] })[] = await res.json();
+  const rawTodos: (Todo & { categories_todos?: { category: Category }[] })[] =
+    await res.json();
 
   return rawTodos.map(({ id, title, due_date, content, done }) => ({
     id,
@@ -65,9 +71,11 @@ export async function editTodo(updatedTodo: NewTodo, id: number) {
   }
 }
 
-
-
-export async function updateTodoStatus(done: boolean, id: number | string, category_id?: string) {
+export async function updateTodoStatus(
+  done: boolean,
+  id: number | string,
+  category_id?: string,
+) {
   const res = await fetch(`${API_URL}?id=eq.${id}`, {
     method: "PATCH",
     headers,
@@ -106,7 +114,10 @@ export async function deleteCategory(id: string) {
   handleApiError(res);
 }
 
-export async function updateCategory(id: string, updatedCategory: CategoryInsert) {
+export async function updateCategory(
+  id: string,
+  updatedCategory: CategoryInsert,
+) {
   const res = await fetch(`${API_URL_CATEGORY}?id=eq.${id}`, {
     method: "PATCH",
     headers,
