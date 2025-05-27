@@ -64,7 +64,7 @@ const TodoListSection = ({
   });
 
   return (
-    <div>
+    <>
       <ul className="todo-list">
         <span className="sort-title">
           {sortBy === "recent"
@@ -121,7 +121,7 @@ const TodoListSection = ({
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 };
 

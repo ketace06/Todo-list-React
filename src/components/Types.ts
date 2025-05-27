@@ -9,12 +9,11 @@ export type Todo = {
 };
 
 export type NewTodo = {
-  id: number;
+  id?: number;
   title?: string;
-  due_date?: string;
-  content?: string;
+  due_date?: string | null;
+  content?: string | null;
   done?: boolean;
-  category_id?: string;
 };
 
 export type Props = {

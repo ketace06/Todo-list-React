@@ -11,7 +11,7 @@ const Sidebar = () => {
         <div className="section-title">
           <p>Overview</p>
           <li className="sidebar-li">
-            <NavLink to="/">Dashboard</NavLink>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li className="sidebar-li">
             <NavLink to="/category">Category</NavLink>

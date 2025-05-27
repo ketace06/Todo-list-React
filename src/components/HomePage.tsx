@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import TodoForm from "./TodoForm";
 import TodoBtn from "./TodoBtn";
 import { TodoListSection, type SortOptions } from "./TodoListSection";
@@ -6,17 +7,30 @@ import { useTodos } from "./CustomHook";
 import type { Todo } from "./Types";
 
 const HomePage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
-  const [sortBy, setSortBy] = useState<SortOptions>("recent");
+
+  const sortParam = searchParams.get("sort") as SortOptions | null;
+  const [sortBy, setSortBy] = useState<SortOptions>(sortParam || "recent");
+
   const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
 
+  useEffect(() => {
+    if (sortBy !== sortParam) {
+      searchParams.set("sort", sortBy);
+      setSearchParams(searchParams);
+    }
+  }, [searchParams, setSearchParams, sortBy, sortParam]);
+
   return (
-    <>
+    <div className="home-page">
       <TodoForm
         onAddTodo={handleAddTodo}
         todoToEdit={todoToEdit}
         onEditTodo={async (updatedTodo) => {
-          await handleEditTodo(updatedTodo.id, updatedTodo);
+          if (updatedTodo.id !== undefined) {
+            await handleEditTodo(updatedTodo.id, updatedTodo);
+          }
         }}
         todos={todos}
         onDeleteTodo={handleDeleteTodo}
@@ -33,7 +47,9 @@ const HomePage = () => {
           todos={todos}
           onDeleteTodo={handleDeleteTodo}
           onEditTodo={(todo) => {
-            setTodoToEdit(todo);
+            if (todo.id !== undefined) {
+              setTodoToEdit(todo as Todo);
+            }
           }}
           onToggleDone={(id: number, done: boolean) => {
             const todoItem = todos.find((todo) => todo.id === id);
@@ -45,7 +61,7 @@ const HomePage = () => {
           sortBy={sortBy}
         />
       </div>
-    </>
+    </div>
   );
 };
 

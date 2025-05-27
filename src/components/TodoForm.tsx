@@ -35,7 +35,7 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
       return;
     }
     if (todoToEdit) {
-      await onEditTodo({
+      onEditTodo({
         id: todoToEdit.id,
         title: title.trim(),
         due_date: date || null,

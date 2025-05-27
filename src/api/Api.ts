@@ -60,10 +60,7 @@ export async function editTodo(updatedTodo: NewTodo, id: number) {
   try {
     await fetch(`${API_URL}?id=eq.${id}`, {
       method: "PATCH",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(updatedTodo),
     });
   } catch (error) {
