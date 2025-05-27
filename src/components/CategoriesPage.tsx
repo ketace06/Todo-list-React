@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { addCategory, fetchCategories } from "../api/Api";
 import type { Category, CategoryInsert } from "./Types";
 import CategoryForm from "./CategoryForm";
-import Loader from "./Loader"; 
+import Loader from "./Loader";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadCategories = async () => {

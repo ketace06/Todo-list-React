@@ -29,7 +29,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
         const fetched = await fetchCategories();
         setCategories(fetched);
       } catch {
-        setError("Failed to load categories.");
+        setError("Failed to load tasks.");
       } finally {
         setLoadingCategories(false);
       }
