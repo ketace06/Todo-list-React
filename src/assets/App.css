@@ -39,6 +39,7 @@ body.dark-mode {
 .dark-mode .select-filter,
 .dark-mode .task-item,
 .dark-mode .todo-form-popup,
+.dark-mode .category-form-popup,
 .dark-mode .todo-list {
   background-color: var(--third-color);
   color: #f5f6fa;
@@ -192,7 +193,7 @@ select {
   background-color: var(--primary-color);
   color: #fff;
   font-weight: 600;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border-radius: 12px;
 }
 .simple-button:hover {
@@ -231,6 +232,7 @@ select {
     transform 0.3s;
   z-index: 5;
 }
+
 .error-text,
 .sidebar {
   position: fixed;
@@ -321,7 +323,7 @@ select {
 
 .todo-list {
   flex-direction: column;
-  background: #fff;
+  background: white;
   border-radius: 22px;
   gap: 18px;
   max-height: 500px;
@@ -499,7 +501,6 @@ select {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-left: 125px;
   height: 100%;
   width: 100%;
 }
@@ -507,11 +508,12 @@ select {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
-  background-color: var(--nav-color);
+  background-color: white;
+  box-shadow: 0 4px 24px rgba(60, 60, 67, 0.08);
   padding: 1rem;
-  width: 80vw;
+  width: 30vw;
   margin: 50px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 .category-card {
   padding: 1rem;
@@ -520,6 +522,51 @@ select {
   display: none;
 }
 
+.category-form-popup {
+  display: none;
+  position: fixed;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(60, 60, 67, 0.15);
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+  z-index: 5;
+  padding: 30px;
+}
+
+.loader {
+  position: fixed;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  z-index: 1000;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 @media (max-width: 1500px) {
   .home-page {
     margin-left: 125px;
@@ -605,9 +652,6 @@ select {
   .add-filter {
     flex-direction: column;
     gap: 15px;
-  }
-  .categories-page {
-    margin: 0;
   }
 }
 @media (max-width: 450px) {
