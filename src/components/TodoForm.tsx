@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
 import { errorsManagment } from "./ErrorsManagment";
-import { fetchCategories } from "../api/Api";
+import { fetchCategories, changeTodoCategory } from "../api/Api";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 
@@ -67,15 +67,21 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           title: title.trim(),
           due_date: date || null,
           content: content || null,
-          category_id: category || undefined,
         });
+        if (category) {
+          await changeTodoCategory(String(todoToEdit.id), category);
+        } else {
+          await changeTodoCategory(String(todoToEdit.id), "");
+        }
       } else {
-        await onAddTodo({
+        const newTodo = await onAddTodo({
           title: title.trim(),
           due_date: date || null,
           content: content || null,
-          category_id: category || undefined,
         });
+        if (newTodo?.id && category) {
+          await changeTodoCategory(String(newTodo.id), category);
+        }
         setTitle("");
         setDate("");
         setContent("");
@@ -99,7 +105,10 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
             <button
               type="button"
               className="close-btn"
-              onClick={() => toggleTodoForm(false)}
+              onClick={() => {
+                toggleTodoForm(false);
+                setError(null);
+              }}
             >
               ❌
             </button>

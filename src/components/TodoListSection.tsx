@@ -99,7 +99,9 @@ const TodoListSection = ({
                     className="checkboxes"
                     type="checkbox"
                     checked={!!todo.done}
-                    onChange={(e) => handleToggleDone(todo.id, e.target.checked)}
+                    onChange={(e) =>
+                      handleToggleDone(todo.id, e.target.checked)
+                    }
                     disabled={deletingId !== null || togglingId !== null}
                   />
                   <div className="task-info">

@@ -39,13 +39,15 @@ export async function fetchApi(): Promise<Todo[]> {
   }));
 }
 
-export async function addTodo(todo: NewTodo) {
+export async function addTodo(todo: NewTodo): Promise<Todo> {
   const res = await fetch(API_URL, {
     method: "POST",
     headers,
     body: JSON.stringify(todo),
   });
   handleApiError(res);
+  const [createdTodo] = await res.json();
+  return createdTodo;
 }
 
 export async function deleteTodo(id: number | string) {
