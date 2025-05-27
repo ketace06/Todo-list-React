@@ -73,68 +73,74 @@ const TodoListSection = ({
   };
 
   return (
-    <ul className="todo-list">
-      <span className="sort-title">
-        {sortBy === "recent"
-          ? "Recently added"
-          : sortBy === "date"
-            ? dueDateTitle
-            : sortBy === "alphabetical"
-              ? "Sort by alphabetical"
-              : sortBy === "status"
-                ? statusTitle
-                : ""}
-      </span>
-      {sortedTodos.map((todo) => (
-        <li className="task-item" key={todo.id}>
-          {deletingId === todo.id || togglingId === todo.id ? (
-            <Loader />
-          ) : (
-            <>
-              <input
-                className="checkboxes"
-                type="checkbox"
-                checked={!!todo.done}
-                onChange={(e) => handleToggleDone(todo.id, e.target.checked)}
-                disabled={deletingId !== null || togglingId !== null}
-              />
-              <div className="task-info">
-                <span className="task-alphabetical">{todo.title}</span>
-                {todo.due_date && (
-                  <span className="due-date">Due: {todo.due_date}</span>
-                )}
-                {todo.content && (
-                  <span className="description">
-                    Description: {todo.content || "None"}
-                  </span>
-                )}
-              </div>
-              <div className="delete-edit-button">
-                <button
-                  className="Delete"
-                  type="button"
-                  onClick={() => handleDelete(todo.id, !!todo.done)}
-                  disabled={deletingId !== null || togglingId !== null}
-                >
-                  🗑️
-                </button>
-                <button
-                  className="Edit"
-                  type="button"
-                  onClick={() => {
-                    toggleTodoForm(true);
-                    onEditTodo(todo);
-                  }}
-                  disabled={deletingId !== null || togglingId !== null}
-                >
-                  ✏️
-                </button>
-              </div>
-            </>
-          )}
-        </li>
-      ))}
-    </ul>
+    <>
+      {todos.length === 0 ? (
+        <span className="sort-title">No todos to display!</span>
+      ) : (
+        <ul className="todo-list">
+          <span className="sort-title">
+            {sortBy === "recent"
+              ? "Recently added"
+              : sortBy === "date"
+                ? dueDateTitle
+                : sortBy === "alphabetical"
+                  ? "Sort by alphabetical"
+                  : sortBy === "status"
+                    ? statusTitle
+                    : ""}
+          </span>
+          {sortedTodos.map((todo) => (
+            <li className="task-item" key={todo.id}>
+              {deletingId === todo.id || togglingId === todo.id ? (
+                <Loader />
+              ) : (
+                <>
+                  <input
+                    className="checkboxes"
+                    type="checkbox"
+                    checked={!!todo.done}
+                    onChange={(e) => handleToggleDone(todo.id, e.target.checked)}
+                    disabled={deletingId !== null || togglingId !== null}
+                  />
+                  <div className="task-info">
+                    <span className="task-alphabetical">{todo.title}</span>
+                    {todo.due_date && (
+                      <span className="due-date">Due: {todo.due_date}</span>
+                    )}
+                    {todo.content && (
+                      <span className="description">
+                        Description: {todo.content || "None"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="delete-edit-button">
+                    <button
+                      className="Delete"
+                      type="button"
+                      onClick={() => handleDelete(todo.id, !!todo.done)}
+                      disabled={deletingId !== null || togglingId !== null}
+                    >
+                      🗑️
+                    </button>
+                    <button
+                      className="Edit"
+                      type="button"
+                      onClick={() => {
+                        toggleTodoForm(true);
+                        onEditTodo(todo);
+                      }}
+                      disabled={deletingId !== null || togglingId !== null}
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 };
 
