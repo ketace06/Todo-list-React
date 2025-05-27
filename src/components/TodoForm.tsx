@@ -1,17 +1,24 @@
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
-import type { Props, Todo } from "./Types";
+import type { Category, Props, Todo } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 import { errorsManagment } from "./ErrorsManagment";
 
 type TodoFormProps = Props & {
   todoToEdit?: Todo | null;
+  categories: Category[];
 };
 
-const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
+const TodoForm = ({
+  onAddTodo,
+  todoToEdit,
+  onEditTodo,
+  categories,
+}: TodoFormProps) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,10 +26,12 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
+      setCategory(todoToEdit.category ? String(todoToEdit.category) : "");
     } else {
       setTitle("");
       setDate("");
       setContent("");
+      setCategory("");
     }
   }, [todoToEdit]);
 
@@ -40,18 +49,21 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
         title: title.trim(),
         due_date: date || null,
         content: content || null,
+        category_id: category || undefined,
       });
     } else {
       await onAddTodo({
         title: title.trim(),
         due_date: date || null,
         content: content || null,
+        category_id: category || undefined,
       });
     }
 
     setTitle("");
     setDate("");
     setContent("");
+    setCategory("");
     toggleTodoForm(false);
   };
 
@@ -83,14 +95,25 @@ const TodoForm = ({ onAddTodo, todoToEdit, onEditTodo }: TodoFormProps) => {
         </div>
 
         <div className="form">
-          <p className="p-form">Date</p>
-          <input
+          <p className="p-form">Category</p>
+          <select
             className="input-text"
-            type="date"
-            name="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">No category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form">
+          <p className="p-form">Date</p>
+          <input className="input-text" type="date" name="date" value={date} />
         </div>
 
         <div className="form">

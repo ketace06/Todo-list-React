@@ -4,8 +4,8 @@ export type Todo = {
   due_date?: string;
   content?: string;
   done?: boolean;
-  category_id?: string;
   category?: Category;
+  category_id?: string;
 };
 
 export type NewTodo = {
@@ -14,6 +14,7 @@ export type NewTodo = {
   due_date?: string | null;
   content?: string | null;
   done?: boolean;
+  category_id?: string;
 };
 
 export type Props = {

@@ -34,6 +34,7 @@ const HomePage = () => {
         }}
         todos={todos}
         onDeleteTodo={handleDeleteTodo}
+        categories={[]}
       />
       <div className="actions-btn">
         <TodoBtn
