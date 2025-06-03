@@ -1,8 +1,14 @@
+import { useState } from "react";
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
+import Loader from "./Loader";
+import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
+
+type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
 type TodoListProps = Omit<Props, "onAddTodo"> & {
-  onToggleDone: (id: number, done: boolean) => void;
+  onToggleDone: (id: number, done: boolean) => Promise<void>;
+  sortBy: SortOptions;
 };
 
 const TodoListSection = ({
@@ -10,58 +16,163 @@ const TodoListSection = ({
   onDeleteTodo,
   onEditTodo,
   onToggleDone,
+  sortBy,
 }: TodoListProps) => {
-  const sortedTodos = todos.slice().reverse();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
+
+  let filteredTodos = todos.slice();
+  let statusTitle = "";
+  let dueDateTitle = "";
+
+  if (sortBy === "status") {
+    filteredTodos = filteredTodos.filter((todo) => !todo.done);
+    statusTitle =
+      filteredTodos.length === 0 ? "You did it all!" : "Sort by status";
+  }
+
+  if (sortBy === "date") {
+    filteredTodos = filteredTodos.filter((todo) => todo.due_date);
+    dueDateTitle =
+      filteredTodos.length === 0
+        ? "You have no tasks assigned to a date!"
+        : "Sort by date";
+  }
+
+  const sortedTodos = filteredTodos.sort((a, b) => {
+    if (sortBy === "recent" || sortBy === "status") {
+      return b.id - a.id;
+    }
+    if (sortBy === "date") {
+      if (!a.due_date) return 1;
+      if (!b.due_date) return -1;
+      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+    }
+    if (sortBy === "alphabetical") {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
+  });
+
+  const handleDelete = async (id: number) => {
+    setDeletingId(id);
+    try {
+      await onDeleteTodo(id);
+      notifySuccess("The task has been successfully deleted!");
+    } catch (err) {
+      notifyError("Error deleting task. Check your internet connection...");
+      console.log(err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleToggleDone = async (id: number, done: boolean) => {
+    setTogglingId(id);
+    try {
+      await onToggleDone(id, done);
+      notifyInfo(`Task marked as ${done ? "done!" : "not done"}`);
+    } catch (err) {
+      notifyError(
+        "Error updating task status. Check your internet connection...",
+      );
+      console.log(err);
+    } finally {
+      setTogglingId(null);
+    }
+  };
 
   return (
-    <div>
-      <ul className="todo-list">
-        {sortedTodos.length === 0 ? (
-          <>
-            <h2>No todos yet</h2>
-          </>
-        ) : (
-          <h2>Recently added</h2>
-        )}
-        {sortedTodos.map((todo) => (
-          <li className="task-item" key={todo.id}>
-            <input
-              className="checkboxes"
-              type="checkbox"
-              checked={!!todo.done}
-              onChange={(e) => onToggleDone(todo.id, e.target.checked)}
-            />
-            <div className="task-info">
-              <span className="task-title">{todo.title}</span>
-              <span className="due-date">Due: {todo.due_date || "N/A"}</span>
-              <span className="description">
-                Description: {todo.content || "None"}
-              </span>
-            </div>
-            <div className="delete-edit-button">
-              <button
-                className="Delete"
-                type="button"
-                onClick={() => onDeleteTodo(todo.id)}
-              >
-                🗑️
-              </button>
-              <button
-                className="Edit"
-                type="button"
-                onClick={() => {
-                  toggleTodoForm(true);
-                  onEditTodo(todo);
-                }}
-              >
-                ✏️
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {todos.length === 0 ? (
+        <span className="sort-title">No todos to display!</span>
+      ) : (
+        <ul className="todo-list">
+          <span className="sort-title">
+            {sortBy === "recent"
+              ? "Recently added"
+              : sortBy === "date"
+                ? dueDateTitle
+                : sortBy === "alphabetical"
+                  ? "Sort by alphabetical"
+                  : sortBy === "status"
+                    ? statusTitle
+                    : ""}
+          </span>
+          {sortedTodos.map((todo) => {
+            const categoryColor = todo.category?.color || null;
+            return (
+              <li className="task-item" key={todo.id}>
+                {deletingId === todo.id || togglingId === todo.id ? (
+                  <Loader />
+                ) : (
+                  <>
+                    <input
+                      className="checkboxes"
+                      type="checkbox"
+                      checked={!!todo.done}
+                      onChange={(e) =>
+                        handleToggleDone(todo.id, e.target.checked)
+                      }
+                      disabled={deletingId !== null || togglingId !== null}
+                    />
+                    <div className="task-info">
+                      <span className="task-alphabetical">
+                        {todo.title}{" "}
+                        {categoryColor && (
+                          <span
+                            style={{
+                              display: "inline-block",
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: categoryColor,
+                              marginRight: "6px",
+                              border: "1px solid black",
+                            }}
+                            aria-label={`Category color for ${todo.category?.title}`}
+                          />
+                        )}
+                      </span>
+                      {todo.due_date && (
+                        <span className="due-date">Due: {todo.due_date}</span>
+                      )}
+                      {todo.content && (
+                        <span className="description">
+                          Description: {todo.content || "None"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="delete-edit-button">
+                      <button
+                        className="Delete"
+                        type="button"
+                        onClick={() => handleDelete(todo.id)}
+                        disabled={deletingId !== null || togglingId !== null}
+                      >
+                        🗑️
+                      </button>
+                      <button
+                        className="Edit"
+                        type="button"
+                        onClick={() => {
+                          toggleTodoForm(true);
+                          onEditTodo(todo);
+                        }}
+                        disabled={deletingId !== null || togglingId !== null}
+                      >
+                        ✏️
+                      </button>
+                    </div>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </>
   );
 };
 
-export default TodoListSection;
+export { TodoListSection, type SortOptions };
