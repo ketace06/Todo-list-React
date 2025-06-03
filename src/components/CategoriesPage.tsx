@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { addCategory, fetchCategories } from "./assets/api/Api";
+import {
+  addCategory,
+  clearAllCategories,
+  fetchCategories,
+} from "./assets/api/Api";
 import type { Category, CategoryInsert } from "./Types";
 import CategoryForm from "./CategoryForm";
 import Loader from "./Loader";
+import { notifyError, notifySuccess } from "./UserNotifications";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -30,8 +35,28 @@ const CategoriesPage = () => {
       const updatedCategories = await fetchCategories();
       setCategories(updatedCategories);
       setIsCategoryFormOpen(false);
+      notifySuccess("Category created!");
     } catch (error) {
       console.error("Failed to add category:", error);
+      notifyError("Error creating category. Check your internet connection...");
+    }
+  };
+
+  const handleClearAllCategories = async () => {
+    if (!categories || categories.length === 0) {
+      notifySuccess("You haven't created categories...");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await clearAllCategories();
+      setCategories([]);
+      notifySuccess("The categories have been successfully deleted!");
+    } catch (error) {
+      console.error("Failed to clear categories:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +100,7 @@ const CategoriesPage = () => {
       <button
         type="button"
         className="simple-button"
-        onClick={() => setIsCategoryFormOpen(true)}
+        onClick={handleClearAllCategories}
       >
         Clear all categories
       </button>

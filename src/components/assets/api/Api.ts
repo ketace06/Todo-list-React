@@ -137,16 +137,12 @@ export async function deleteCategory(id: string): Promise<void> {
   });
   handleApiError(deleteCategoryRes);
 }
-
-export async function clearAllCategories() {
+export async function clearAllCategories(): Promise<void> {
   try {
-    const response = await fetch(API_URL_CATEGORY, {
-      method: "DELETE",
-      headers: { ...headers, Prefer: "return=representation" },
-    });
-
-    await handleApiError(response);
-    fetchCategories();
+    const categories = await fetchCategories();
+    for (const category of categories) {
+      await deleteCategory(category.id);
+    }
   } catch (error) {
     console.error(
       error instanceof Error ? error.message : "An unknown error occurred.",

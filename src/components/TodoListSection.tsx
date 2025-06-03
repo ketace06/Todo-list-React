@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
-import { notifyError, notifyInfo } from "./UserNotifications";
+import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -58,9 +58,9 @@ const TodoListSection = ({
     setDeletingId(id);
     try {
       await onDeleteTodo(id);
-      notifyInfo("🗑️ The task has been successfully deleted!");
+      notifySuccess("The task has been successfully deleted!");
     } catch (err) {
-      notifyError("❌ Error while deleting task. Check your internet.");
+      notifyError("Error deleting task. Check your internet connection...");
       console.log(err);
     } finally {
       setDeletingId(null);
@@ -73,7 +73,9 @@ const TodoListSection = ({
       await onToggleDone(id, done);
       notifyInfo(`Task marked as ${done ? "done!" : "not done"}`);
     } catch (err) {
-      notifyError("⚠️ Error while updating task status.");
+      notifyError(
+        "Error updating task status. Check your internet connection...",
+      );
       console.log(err);
     } finally {
       setTogglingId(null);
@@ -97,57 +99,76 @@ const TodoListSection = ({
                     ? statusTitle
                     : ""}
           </span>
-          {sortedTodos.map((todo) => (
-            <li className="task-item" key={todo.id}>
-              {deletingId === todo.id || togglingId === todo.id ? (
-                <Loader />
-              ) : (
-                <>
-                  <input
-                    className="checkboxes"
-                    type="checkbox"
-                    checked={!!todo.done}
-                    onChange={(e) =>
-                      handleToggleDone(todo.id, e.target.checked)
-                    }
-                    disabled={deletingId !== null || togglingId !== null}
-                  />
-                  <div className="task-info">
-                    <span className="task-alphabetical">{todo.title}</span>
-                    {todo.due_date && (
-                      <span className="due-date">Due: {todo.due_date}</span>
-                    )}
-                    {todo.content && (
-                      <span className="description">
-                        Description: {todo.content || "None"}
+          {sortedTodos.map((todo) => {
+            const categoryColor = todo.category?.color || null;
+            return (
+              <li className="task-item" key={todo.id}>
+                {deletingId === todo.id || togglingId === todo.id ? (
+                  <Loader />
+                ) : (
+                  <>
+                    <input
+                      className="checkboxes"
+                      type="checkbox"
+                      checked={!!todo.done}
+                      onChange={(e) =>
+                        handleToggleDone(todo.id, e.target.checked)
+                      }
+                      disabled={deletingId !== null || togglingId !== null}
+                    />
+                    <div className="task-info">
+                      <span className="task-alphabetical">
+                        {todo.title}{" "}
+                        {categoryColor && (
+                          <span
+                            style={{
+                              display: "inline-block",
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: categoryColor,
+                              marginRight: "6px",
+                              border: "1px solid black",
+                            }}
+                            aria-label={`Category color for ${todo.category?.title}`}
+                          />
+                        )}
                       </span>
-                    )}
-                  </div>
-                  <div className="delete-edit-button">
-                    <button
-                      className="Delete"
-                      type="button"
-                      onClick={() => handleDelete(todo.id)}
-                      disabled={deletingId !== null || togglingId !== null}
-                    >
-                      🗑️
-                    </button>
-                    <button
-                      className="Edit"
-                      type="button"
-                      onClick={() => {
-                        toggleTodoForm(true);
-                        onEditTodo(todo);
-                      }}
-                      disabled={deletingId !== null || togglingId !== null}
-                    >
-                      ✏️
-                    </button>
-                  </div>
-                </>
-              )}
-            </li>
-          ))}
+                      {todo.due_date && (
+                        <span className="due-date">Due: {todo.due_date}</span>
+                      )}
+                      {todo.content && (
+                        <span className="description">
+                          Description: {todo.content || "None"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="delete-edit-button">
+                      <button
+                        className="Delete"
+                        type="button"
+                        onClick={() => handleDelete(todo.id)}
+                        disabled={deletingId !== null || togglingId !== null}
+                      >
+                        🗑️
+                      </button>
+                      <button
+                        className="Edit"
+                        type="button"
+                        onClick={() => {
+                          toggleTodoForm(true);
+                          onEditTodo(todo);
+                        }}
+                        disabled={deletingId !== null || togglingId !== null}
+                      >
+                        ✏️
+                      </button>
+                    </div>
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </>

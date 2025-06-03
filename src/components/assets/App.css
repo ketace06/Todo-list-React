@@ -697,6 +697,23 @@ button:active {
 .no-change-msg {
   color: var(--warning-color);
 }
+.input-color {
+  width: 100%;
+  height: 2.75rem;
+  border: 1.5px solid #a0aec0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f0f4f8, #d9e2ec);
+  cursor: pointer;
+  box-shadow:
+    inset 0 4px 6px rgba(255, 255, 255, 0.9),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 
 @media (max-width: 1500px) {
   .home-page {

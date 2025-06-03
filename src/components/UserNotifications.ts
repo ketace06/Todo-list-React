@@ -7,11 +7,21 @@ const SOUND_SUCCESS = successSound;
 const SOUND_ERROR = errorSound;
 const SOUND_INFO = notifSound;
 
-let notificationsEnabled = true;
+let notificationsEnabled = localStorage.getItem("notificationsEnabled") !== "false";
+let popupEnabled = localStorage.getItem("popupEnabled") !== "false";
 
 export const setNotificationsEnabled = (enabled: boolean) => {
   notificationsEnabled = enabled;
+  localStorage.setItem("notificationsEnabled", enabled.toString());
 };
+
+export const setPopupEnabled = (enabled: boolean) => {
+  popupEnabled = enabled;
+  localStorage.setItem("popupEnabled", enabled.toString());
+};
+
+export const getNotificationsEnabled = () => notificationsEnabled;
+export const getPopupEnabled = () => popupEnabled;
 
 const playSound = (soundUrl: string) => {
   if (!notificationsEnabled) return;
@@ -23,6 +33,24 @@ const playSound = (soundUrl: string) => {
   }
 };
 
+export const notifyError = (message: string) => {
+  if (notificationsEnabled) playSound(SOUND_ERROR);
+  if (popupEnabled) toast.error(message);
+};
+
+export const notifySuccess = (message: string) => {
+  if (notificationsEnabled) playSound(SOUND_SUCCESS);
+  if (popupEnabled) toast.success(message);
+};
+
+export const notifyInfo = (message: string) => {
+  if (notificationsEnabled) playSound(SOUND_INFO);
+  if (popupEnabled) toast.info(message);
+};
+
+export const notifyOffline = () => notifyError("You are offline.");
+export const notifyOnline = () => notifyInfo("Welcome back User");
+
 export function errorsManagment(
   title: string,
   date: string,
@@ -31,29 +59,17 @@ export function errorsManagment(
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  if (!navigator.onLine) {
-    return "Warning: You are currently offline.";
-  }
+  if (!navigator.onLine) return "Warning: You are currently offline.";
 
   if (date) {
     const inputDate = new Date(date);
     inputDate.setHours(0, 0, 0, 0);
-    if (inputDate < today) {
-      return "Warning: Due date cannot be before today.";
-    }
+    if (inputDate < today) return "Warning: Due date cannot be before today.";
   }
 
-  if (title.trim().length === 0) {
-    return "Warning: Title is required.";
-  }
-
-  if (title.trim().length > 50) {
-    return "Warning: Title must be less than 50 characters.";
-  }
-
-  if (content.trim().length > 200) {
-    return "Warning: Description must be less than 200 characters.";
-  }
+  if (title.trim().length === 0) return "Warning: Title is required.";
+  if (title.trim().length > 50) return "Warning: Title must be less than 50 characters.";
+  if (content.trim().length > 200) return "Warning: Description must be less than 200 characters.";
 
   return null;
 }
@@ -64,35 +80,9 @@ export const validateAndNotify = (
   content: string,
 ): boolean => {
   const error = errorsManagment(title, date, content);
-
   if (error) {
-    if (notificationsEnabled) {
-      playSound(SOUND_ERROR);
-      toast.error(error);
-    }
+    notifyError(error);
     return false;
   }
-
   return true;
 };
-
-export const notifyError = (message: string) => {
-  if (!notificationsEnabled) return;
-  playSound(SOUND_ERROR);
-  toast.error(message);
-};
-
-export const notifySuccess = (message: string) => {
-  if (!notificationsEnabled) return;
-  playSound(SOUND_SUCCESS);
-  toast.success(message);
-};
-
-export const notifyInfo = (message: string) => {
-  if (!notificationsEnabled) return;
-  playSound(SOUND_INFO);
-  toast.info(message);
-};
-
-export const notifyOffline = () => notifyError("You are offline.");
-export const notifyOnline = () => notifyInfo("Welcome back User");

@@ -30,7 +30,6 @@ export type Category = {
 };
 
 export type CategoryInsert = {
-  id: string;
   title: string;
   color: string;
 };

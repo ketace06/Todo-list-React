@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import DayNightToggle from "./DayNightToggle";
+import { setNotificationsEnabled, setPopupEnabled } from "./UserNotifications";
 
 const SettingsPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const stored = localStorage.getItem("darkMode");
-    if (stored !== null) {
-      return stored === "true";
-    }
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+    return stored ? stored === "true" : window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+  });
+
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    return localStorage.getItem("notificationsEnabled") !== "false";
+  });
+
+  const [popupEnabled, setPopupEnabledState] = useState(() => {
+    return localStorage.getItem("popupEnabled") !== "false";
   });
 
   useEffect(() => {
@@ -15,15 +21,32 @@ const SettingsPage = () => {
     localStorage.setItem("darkMode", isDarkMode.toString());
   }, [isDarkMode]);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
-  };
+  useEffect(() => {
+    setNotificationsEnabled(soundEnabled);
+  }, [soundEnabled]);
+
+  useEffect(() => {
+    setPopupEnabled(popupEnabled);
+  }, [popupEnabled]);
 
   return (
     <div className="settings-page">
       <h1>Settings</h1>
-      <span>for now there only one settings</span>
-      <DayNightToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      <DayNightToggle isDarkMode={isDarkMode} toggleDarkMode={() => setIsDarkMode((prev) => !prev)} />
+
+      <div className="sound-toggle">
+        <label>
+          <input type="checkbox" checked={soundEnabled} onChange={() => setSoundEnabled((prev) => !prev)} />
+          Enable Notification Sounds
+        </label>
+      </div>
+
+      <div className="popup-toggle">
+        <label>
+          <input type="checkbox" checked={popupEnabled} onChange={() => setPopupEnabledState((prev) => !prev)} />
+          Enable Notification Popups
+        </label>
+      </div>
     </div>
   );
 };
