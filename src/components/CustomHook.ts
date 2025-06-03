@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchTodos, addTodo, deleteTodo, editTodo } from "../api/Api";
+import { fetchTodos, addTodo, deleteTodo, editTodo } from "./assets/api/Api";
 import type { NewTodo, Todo } from "../components/Types";
 
 export function useTodos() {

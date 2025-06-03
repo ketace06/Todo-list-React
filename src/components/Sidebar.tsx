@@ -1,27 +1,12 @@
 import { useState, useRef, type TouchEvent } from "react";
 import { NavLink } from "react-router-dom";
 
-interface LinkItem {
-  icon: string;
-  to: string;
-  label: string;
-}
-
 const Sidebar: React.FC = () => {
   const [popupOpen, setPopupOpen] = useState<"overview" | "account" | null>(
     null,
   );
   const [popupTranslateY, setPopupTranslateY] = useState<number>(0);
   const startYRef = useRef<number | null>(null);
-
-  const overviewLinks: LinkItem[] = [
-    { icon: "🏠", to: "/", label: "Home" },
-    { icon: "📚", to: "/category", label: "Category" },
-  ];
-
-  const accountLinks: LinkItem[] = [
-    { icon: "⚙️", to: "/settings", label: "Settings" },
-  ];
 
   const openPopup = (section: "overview" | "account") => {
     setPopupOpen(section);
@@ -64,12 +49,12 @@ const Sidebar: React.FC = () => {
               Overview
             </button>
             <ul className="sidebar-list">
-              {overviewLinks.map(({ icon, to, label }) => (
-                <li key={to} className="sidebar-li">
-                  {icon}
-                  <NavLink to={to}>{label}</NavLink>
-                </li>
-              ))}
+              <li className="sidebar-li">
+                <NavLink to="/">🏠 Home</NavLink>
+              </li>
+              <li className="sidebar-li">
+                <NavLink to="/category">📚 Category</NavLink>
+              </li>
             </ul>
           </li>
           <li className="section-li">
@@ -81,12 +66,9 @@ const Sidebar: React.FC = () => {
               Account
             </button>
             <ul className="sidebar-list">
-              {accountLinks.map(({ icon, to, label }) => (
-                <li key={to} className="sidebar-li">
-                  {icon}
-                  <NavLink to={to}>{label}</NavLink>
-                </li>
-              ))}
+              <li className="sidebar-li">
+                <NavLink to="/settings">⚙️ Settings</NavLink>
+              </li>
             </ul>
           </li>
         </ul>
@@ -113,15 +95,28 @@ const Sidebar: React.FC = () => {
             ×
           </button>
           <ul className="drawer-list">
-            {(popupOpen === "overview" ? overviewLinks : accountLinks).map(
-              ({ icon, to, label }) => (
-                <li key={to} className="sidebar-li">
-                  {icon}
-                  <NavLink to={to} onClick={closePopup}>
-                    {label}
+            {popupOpen === "overview" ? (
+              <>
+                <li className="sidebar-li">
+                  🏠{" "}
+                  <NavLink to="/" onClick={closePopup}>
+                    Home
                   </NavLink>
                 </li>
-              ),
+                <li className="sidebar-li">
+                  📚{" "}
+                  <NavLink to="/category" onClick={closePopup}>
+                    Category
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              <li className="sidebar-li">
+                ⚙️{" "}
+                <NavLink to="/settings" onClick={closePopup}>
+                  Settings
+                </NavLink>
+              </li>
             )}
           </ul>
         </div>

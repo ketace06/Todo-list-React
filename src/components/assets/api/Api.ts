@@ -1,9 +1,4 @@
-import type {
-  NewTodo,
-  Todo,
-  Category,
-  CategoryInsert,
-} from "../components/Types";
+import type { NewTodo, Todo, Category, CategoryInsert } from "../../Types";
 
 const API_URL = "https://api.todos.in.jt-lab.ch/todos";
 const API_URL_CATEGORY = "https://api.todos.in.jt-lab.ch/categories";

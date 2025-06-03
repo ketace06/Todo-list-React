@@ -1,8 +1,11 @@
 import { toast } from "sonner";
+import errorSound from "./assets/Sounds/Error.mp3";
+import notifSound from "./assets/Sounds/Notif.mp3";
+import successSound from "./assets/Sounds/Success.mp3";
 
-const SOUND_SUCCESS = "/sounds/success.mp3";
-const SOUND_ERROR = "/sounds/error.mp3";
-const SOUND_INFO = "/sounds/info.mp3";
+const SOUND_SUCCESS = successSound;
+const SOUND_ERROR = errorSound;
+const SOUND_INFO = notifSound;
 
 let notificationsEnabled = true;
 
@@ -88,10 +91,8 @@ export const notifySuccess = (message: string) => {
 export const notifyInfo = (message: string) => {
   if (!notificationsEnabled) return;
   playSound(SOUND_INFO);
-  toast(message);
+  toast.info(message);
 };
 
-export const notifyTaskDeleted = () =>
-  notifySuccess("🗑️ Task successfully deleted!");
-export const notifyTaskUpdated = () => notifySuccess("✅ Task updated!");
-export const notifyOffline = () => notifyError("⚠️ You are offline.");
+export const notifyOffline = () => notifyError("You are offline.");
+export const notifyOnline = () => notifyInfo("Welcome back User");

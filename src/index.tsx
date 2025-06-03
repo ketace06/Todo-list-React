@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import TodoApp from "./TodoApp";
-import "./assets/App.css";
+import "./components/assets/App.css";
 
 const rootEl = document.getElementById("root");
 if (rootEl) {

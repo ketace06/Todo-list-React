@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addCategory, fetchCategories } from "../api/Api";
+import { addCategory, fetchCategories } from "./assets/api/Api";
 import type { Category, CategoryInsert } from "./Types";
 import CategoryForm from "./CategoryForm";
 import Loader from "./Loader";

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
-import { fetchCategories, changeTodoCategory } from "../api/Api";
+import { fetchCategories, changeTodoCategory } from "./assets/api/Api";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { validateAndNotify, notifySuccess } from "./UserNotifications";
@@ -83,7 +83,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           },
           category === "" ? null : category,
         );
-        notifySuccess("✅ Task updated!");
+        notifySuccess("Task updated!");
       } else {
         const newTodo = await onAddTodo({
           title: title.trim(),
@@ -93,7 +93,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
         if (newTodo?.id && category) {
           await changeTodoCategory(String(newTodo.id), category, false);
         }
-        notifySuccess("🆕 Task created!");
+        notifySuccess("Task created!");
         setTitle("");
         setDate("");
         setContent("");

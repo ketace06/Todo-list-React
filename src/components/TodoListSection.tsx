@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
-import { toast } from "sonner";
+import { notifyError, notifyInfo } from "./UserNotifications";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -59,9 +59,9 @@ const TodoListSection = ({
     try {
       await onDeleteTodo(id);
       await onToggleDone(id, done);
-      toast.success("🗑️ The task has been successfully deleted!");
+      notifyInfo("🗑️ The task has been successfully deleted!");
     } catch (err) {
-      toast.error("❌ Error while deleting task. Check your internet.");
+      notifyError("❌ Error while deleting task. Check your internet.");
       console.log(err);
     } finally {
       setDeletingId(null);
@@ -72,9 +72,9 @@ const TodoListSection = ({
     setTogglingId(id);
     try {
       await onToggleDone(id, done);
-      toast("✅ The task is done!");
+      notifyInfo(`Task marked as ${done ? "done!" : "not done"}`);
     } catch (err) {
-      toast.error("⚠️ Error while updating task status.");
+      notifyError("⚠️ Error while updating task status.");
       console.log(err);
     } finally {
       setTogglingId(null);
