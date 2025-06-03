@@ -836,6 +836,7 @@ button:active {
     top: auto;
     flex-direction: row;
     padding: 0;
+    justify-content: space-between;
   }
   .section-title button {
     display: flex;
@@ -849,6 +850,7 @@ button:active {
     justify-content: space-between;
     padding: 0 16px;
     margin: 0;
+    width: 100%;
   }
   .todo-form-popup {
     width: 90vw;

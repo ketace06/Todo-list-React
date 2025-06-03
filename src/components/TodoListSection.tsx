@@ -54,11 +54,10 @@ const TodoListSection = ({
     return 0;
   });
 
-  const handleDelete = async (id: number, done: boolean) => {
+  const handleDelete = async (id: number) => {
     setDeletingId(id);
     try {
       await onDeleteTodo(id);
-      await onToggleDone(id, done);
       notifyInfo("🗑️ The task has been successfully deleted!");
     } catch (err) {
       notifyError("❌ Error while deleting task. Check your internet.");
@@ -128,7 +127,7 @@ const TodoListSection = ({
                     <button
                       className="Delete"
                       type="button"
-                      onClick={() => handleDelete(todo.id, !!todo.done)}
+                      onClick={() => handleDelete(todo.id)}
                       disabled={deletingId !== null || togglingId !== null}
                     >
                       🗑️

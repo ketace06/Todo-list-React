@@ -91,7 +91,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           content: content || undefined,
         });
         if (newTodo?.id && category) {
-          await changeTodoCategory(String(newTodo.id), category, false);
+          await changeTodoCategory(String(newTodo.id), category);
         }
         notifySuccess("Task created!");
         setTitle("");

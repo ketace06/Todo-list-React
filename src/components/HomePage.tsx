@@ -55,7 +55,11 @@ const HomePage = () => {
           onToggleDone={async (id: number, done: boolean) => {
             const todoItem = todos.find((todo) => todo.id === id);
             if (todoItem) {
-              await handleEditTodo(id, { ...todoItem, done });
+              await handleEditTodo(
+                id,
+                { ...todoItem, done },
+                todoItem.category?.id ?? null,
+              );
               setTodoToEdit(null);
             }
           }}

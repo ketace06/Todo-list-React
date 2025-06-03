@@ -20,6 +20,7 @@ const CategoryForm = ({ onClose, onCreate }: CategoryFormProps) => {
       await onCreate({
         title,
         color,
+        id: "",
       });
       setTitle("");
       setColor("#cccccc");

@@ -62,6 +62,14 @@ export async function addTodo(
 }
 
 export async function deleteTodo(id: number | string): Promise<void> {
+  const deleteLinksRes = await fetch(
+    `${API_URL_TODO_CATEGORY}?todo_id=eq.${id}`,
+    {
+      method: "DELETE",
+      headers: { ...headers, Prefer: "return=representation" },
+    },
+  );
+  handleApiError(deleteLinksRes);
   const res = await fetch(`${API_URL}?id=eq.${id}`, {
     method: "DELETE",
     headers: { ...headers, Prefer: "return=representation" },
@@ -74,15 +82,13 @@ export async function editTodo(
   id: number,
   categoryId?: string | null,
 ): Promise<void> {
-  const done = updatedTodo.done ?? false;
-
   await fetch(`${API_URL}?id=eq.${id}`, {
     method: "PATCH",
     headers: { ...headers, Prefer: "return=representation" },
     body: JSON.stringify(updatedTodo),
   }).then(handleApiError);
 
-  await changeTodoCategory(String(id), categoryId ?? null, done);
+  await changeTodoCategory(String(id), categoryId ?? null);
 }
 
 export async function updateTodoStatus(
@@ -97,7 +103,7 @@ export async function updateTodoStatus(
   });
   handleApiError(res);
   if (categoryId) {
-    await changeTodoCategory(String(id), categoryId, done);
+    await changeTodoCategory(String(id), categoryId);
   }
 }
 
@@ -163,7 +169,6 @@ export async function updateCategory(
 export async function changeTodoCategory(
   todoId: string,
   newCatId: string | null | undefined,
-  done: boolean,
 ) {
   const res = await fetch(`${API_URL_TODO_CATEGORY}?todo_id=eq.${todoId}`, {
     headers: { ...headers, Prefer: "return=representation" },
@@ -172,27 +177,21 @@ export async function changeTodoCategory(
   const oldCatId = links?.[0]?.category_id;
 
   if (oldCatId && oldCatId !== newCatId) {
-    await fetch(
+    const deleteRes = await fetch(
       `${API_URL_TODO_CATEGORY}?todo_id=eq.${todoId}&category_id=eq.${oldCatId}`,
-      { method: "DELETE" },
+      { method: "DELETE", headers },
     );
+    if (!deleteRes.ok) {
+      throw new Error("Failed to delete old category link");
+    }
   }
 
-  if (newCatId && newCatId !== "") {
+  if (newCatId && newCatId !== oldCatId) {
     const linkRes = await fetch(API_URL_TODO_CATEGORY, {
       method: "POST",
       headers: { ...headers, Prefer: "return=representation" },
-      body: JSON.stringify({
-        todo_id: todoId,
-        category_id: newCatId,
-      }),
+      body: JSON.stringify({ todo_id: todoId, category_id: newCatId }),
     });
-    handleApiError(linkRes);
+    if (!linkRes.ok) throw new Error("Failed to create new category link");
   }
-
-  await fetch(`${API_URL}?id=eq.${todoId}`, {
-    method: "PATCH",
-    headers: { ...headers, Prefer: "return=representation" },
-    body: JSON.stringify({ done }),
-  });
 }
