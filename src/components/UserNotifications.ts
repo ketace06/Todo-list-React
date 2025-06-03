@@ -7,7 +7,8 @@ const SOUND_SUCCESS = successSound;
 const SOUND_ERROR = errorSound;
 const SOUND_INFO = notifSound;
 
-let notificationsEnabled = localStorage.getItem("notificationsEnabled") !== "false";
+let notificationsEnabled =
+  localStorage.getItem("notificationsEnabled") !== "false";
 let popupEnabled = localStorage.getItem("popupEnabled") !== "false";
 
 export const setNotificationsEnabled = (enabled: boolean) => {
@@ -68,8 +69,10 @@ export function errorsManagment(
   }
 
   if (title.trim().length === 0) return "Warning: Title is required.";
-  if (title.trim().length > 50) return "Warning: Title must be less than 50 characters.";
-  if (content.trim().length > 200) return "Warning: Description must be less than 200 characters.";
+  if (title.trim().length > 50)
+    return "Warning: Title must be less than 50 characters.";
+  if (content.trim().length > 200)
+    return "Warning: Description must be less than 200 characters.";
 
   return null;
 }

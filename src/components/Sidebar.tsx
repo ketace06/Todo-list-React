@@ -5,17 +5,29 @@ const Sidebar: React.FC = () => {
   const [popupOpen, setPopupOpen] = useState<"overview" | "account" | null>(
     null,
   );
-  const [popupTranslateY, setPopupTranslateY] = useState<number>(0);
+  const [popupTranslateY, setPopupTranslateY] = useState(0);
+  const [isClosing, setIsClosing] = useState(false);
+  const [hasRendered, setHasRendered] = useState(false);
   const startYRef = useRef<number | null>(null);
 
   const openPopup = (section: "overview" | "account") => {
     setPopupOpen(section);
     setPopupTranslateY(0);
+    setIsClosing(false);
+    setHasRendered(false);
+    setTimeout(() => {
+      setHasRendered(true);
+    }, 10);
   };
 
   const closePopup = () => {
-    setPopupOpen(null);
     setPopupTranslateY(0);
+    setIsClosing(true);
+    setTimeout(() => {
+      setPopupOpen(null);
+      setIsClosing(false);
+      setHasRendered(false);
+    }, 350);
   };
 
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
@@ -26,13 +38,20 @@ const Sidebar: React.FC = () => {
     if (startYRef.current === null) return;
     const currentY = e.touches[0].clientY;
     const diff = currentY - startYRef.current;
-    if (diff > 0) setPopupTranslateY(diff);
+    if (diff < 0) {
+      setPopupTranslateY(diff / 3);
+    } else {
+      setPopupTranslateY(diff);
+    }
   };
 
   const handleTouchEnd = () => {
     if (startYRef.current === null) return;
-    if (popupTranslateY > 150) closePopup();
-    else setPopupTranslateY(0);
+    if (popupTranslateY > 150) {
+      closePopup();
+    } else {
+      setPopupTranslateY(0);
+    }
     startYRef.current = null;
   };
 
@@ -79,47 +98,63 @@ const Sidebar: React.FC = () => {
       </nav>
 
       {popupOpen && (
-        <div
-          className="popup-drawer"
-          style={{ transform: `translateY(${popupTranslateY}px)` }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <button
-            type="button"
-            onClick={closePopup}
-            className="close-btn"
-            aria-label="Close menu"
+        <>
+          <div className="drawer-backdrop" onClick={closePopup} />
+          <div
+            className={`popup-drawer ${
+              popupTranslateY !== 0
+                ? "dragging"
+                : isClosing
+                  ? "closing"
+                  : hasRendered
+                    ? "open"
+                    : ""
+            }`}
+            style={
+              popupTranslateY !== 0 && !isClosing
+                ? { transform: `translateY(${popupTranslateY}px)` }
+                : undefined
+            }
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            ×
-          </button>
-          <ul className="drawer-list">
-            {popupOpen === "overview" ? (
-              <>
+            <div className="drawer-handle" />
+            <button
+              type="button"
+              onClick={closePopup}
+              className="close-btn"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+            <ul className="drawer-list">
+              {popupOpen === "overview" ? (
+                <>
+                  <li className="sidebar-li">
+                    🏠{" "}
+                    <NavLink to="/" onClick={closePopup}>
+                      Home
+                    </NavLink>
+                  </li>
+                  <li className="sidebar-li">
+                    📚{" "}
+                    <NavLink to="/category" onClick={closePopup}>
+                      Category
+                    </NavLink>
+                  </li>
+                </>
+              ) : (
                 <li className="sidebar-li">
-                  🏠{" "}
-                  <NavLink to="/" onClick={closePopup}>
-                    Home
+                  ⚙️{" "}
+                  <NavLink to="/settings" onClick={closePopup}>
+                    Settings
                   </NavLink>
                 </li>
-                <li className="sidebar-li">
-                  📚{" "}
-                  <NavLink to="/category" onClick={closePopup}>
-                    Category
-                  </NavLink>
-                </li>
-              </>
-            ) : (
-              <li className="sidebar-li">
-                ⚙️{" "}
-                <NavLink to="/settings" onClick={closePopup}>
-                  Settings
-                </NavLink>
-              </li>
-            )}
-          </ul>
-        </div>
+              )}
+            </ul>
+          </div>
+        </>
       )}
     </>
   );
