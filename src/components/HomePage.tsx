@@ -27,9 +27,9 @@ const HomePage = () => {
       <TodoForm
         onAddTodo={handleAddTodo}
         todoToEdit={todoToEdit}
-        onEditTodo={async (updatedTodo) => {
+        onEditTodo={async (updatedTodo, categoryId) => {
           if (updatedTodo.id !== undefined) {
-            await handleEditTodo(updatedTodo.id, updatedTodo);
+            await handleEditTodo(updatedTodo.id, updatedTodo, categoryId);
           }
         }}
         todos={todos}

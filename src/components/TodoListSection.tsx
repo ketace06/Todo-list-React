@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
+import { UserMessages } from "./UserInteractmessages";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -19,6 +20,7 @@ const TodoListSection = ({
 }: TodoListProps) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  const [userMessage, setUserMessage] = useState<string | null>(null);
 
   let filteredTodos = todos.slice();
   let statusTitle = "";
@@ -52,12 +54,21 @@ const TodoListSection = ({
     }
     return 0;
   });
+  useEffect(() => {
+    if (!userMessage) return;
+    const timer = setTimeout(() => setUserMessage(null), 7000);
+    return () => clearTimeout(timer);
+  }, [userMessage]);
 
   const handleDelete = async (id: number, done: boolean) => {
     setDeletingId(id);
     try {
       await onDeleteTodo(id);
       await onToggleDone(id, done);
+      setUserMessage("The task has been successfully deleted!");
+    } catch (err) {
+      setUserMessage("Error while deleting task... try to connect to internet");
+      console.log(err);
     } finally {
       setDeletingId(null);
     }
@@ -67,6 +78,10 @@ const TodoListSection = ({
     setTogglingId(id);
     try {
       await onToggleDone(id, done);
+      setUserMessage("The task is done!");
+    } catch (err) {
+      setUserMessage("Error while done the task... try to connect to internet");
+      console.log(err);
     } finally {
       setTogglingId(null);
     }
@@ -142,6 +157,7 @@ const TodoListSection = ({
           ))}
         </ul>
       )}
+      <UserMessages message={userMessage} />
     </>
   );
 };

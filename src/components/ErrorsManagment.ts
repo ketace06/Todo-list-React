@@ -5,6 +5,11 @@ export function errorsManagment(
 ): string | null {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  if (!navigator.onLine) {
+    return "Warning: You are currently offline.";
+  }
+
   if (date) {
     const inputDate = new Date(date);
     inputDate.setHours(0, 0, 0, 0);
@@ -12,11 +17,14 @@ export function errorsManagment(
       return "Warning: Due date cannot be before today.";
     }
   }
+
   if (title.trim().length > 50) {
     return "Warning: Title must be less than 50 characters.";
   }
+
   if (content.trim().length > 200) {
     return "Warning: Description must be less than 200 characters";
   }
+
   return null;
 }

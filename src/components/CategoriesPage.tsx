@@ -66,11 +66,18 @@ const CategoriesPage = () => {
         )}
       </div>
       <button
-        className="simple-button"
         type="button"
+        className="simple-button"
         onClick={() => setIsCategoryFormOpen(true)}
       >
         Create a category
+      </button>
+      <button
+        type="button"
+        className="simple-button"
+        onClick={() => setIsCategoryFormOpen(true)}
+      >
+        Clear all categories
       </button>
     </div>
   );

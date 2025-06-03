@@ -18,9 +18,9 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
-
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [hasChanged, setHasChanged] = useState(false);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -28,8 +28,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       try {
         const fetched = await fetchCategories();
         setCategories(fetched);
-      } catch {
-        setError("Failed to load tasks.");
       } finally {
         setLoadingCategories(false);
       }
@@ -42,7 +40,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
-      setCategory(todoToEdit.category ? String(todoToEdit.category) : "");
+      setCategory(todoToEdit.category ? todoToEdit.category.id : "");
     } else {
       setTitle("");
       setDate("");
@@ -50,6 +48,26 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setCategory("");
     }
   }, [todoToEdit]);
+
+  useEffect(() => {
+    if (!todoToEdit) {
+      setHasChanged(false);
+      return;
+    }
+
+    const originalTitle = todoToEdit.title || "";
+    const originalDate = todoToEdit.due_date || "";
+    const originalContent = todoToEdit.content || "";
+    const originalCategory = todoToEdit.category ? todoToEdit.category.id : "";
+
+    const isSame =
+      title === originalTitle &&
+      date === originalDate &&
+      content === originalContent &&
+      category === originalCategory;
+
+    setHasChanged(!isSame);
+  }, [title, date, content, category, todoToEdit]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -62,25 +80,24 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
     setLoadingSubmit(true);
     try {
       if (todoToEdit) {
-        await onEditTodo({
-          id: todoToEdit.id,
-          title: title.trim(),
-          due_date: date || null,
-          content: content || null,
-        });
-        if (category) {
-          await changeTodoCategory(String(todoToEdit.id), category);
-        } else {
-          await changeTodoCategory(String(todoToEdit.id), "");
-        }
+        await onEditTodo(
+          {
+            id: todoToEdit.id,
+            title: title.trim(),
+            due_date: date || null,
+            content: content || null,
+            done: todoToEdit.done,
+          },
+          category === "" ? null : category,
+        );
       } else {
         const newTodo = await onAddTodo({
           title: title.trim(),
-          due_date: date || null,
-          content: content || null,
+          due_date: date || undefined,
+          content: content || undefined,
         });
         if (newTodo?.id && category) {
-          await changeTodoCategory(String(newTodo.id), category);
+          await changeTodoCategory(String(newTodo.id), category, false);
         }
         setTitle("");
         setDate("");
@@ -93,11 +110,12 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setLoadingSubmit(false);
     }
   };
-
   return (
     <>
       {loadingCategories || loadingSubmit ? (
-        <Loader />
+        <div className="loader-container">
+          <Loader />
+        </div>
       ) : (
         <form className="todo-form-popup" onSubmit={handleSubmit}>
           <div className="title-formclose-btn">
@@ -167,13 +185,16 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-
           <button
             className="simple-button"
             type="submit"
-            disabled={loadingSubmit}
+            disabled={loadingSubmit || Boolean(todoToEdit && !hasChanged)}
           >
-            {todoToEdit ? "Modify" : "Create"}
+            {todoToEdit && !hasChanged
+              ? "No changes to save"
+              : todoToEdit
+                ? "Modify"
+                : "Create"}
           </button>
         </form>
       )}
