@@ -291,7 +291,6 @@ select {
     0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-.error-text,
 .sidebar {
   position: fixed;
   z-index: 10;
@@ -319,7 +318,6 @@ select {
     transform 0.2s;
 }
 .clear-all,
-.error-text,
 .sort-title,
 .user {
   font-weight: 600;
@@ -453,14 +451,6 @@ select {
   color: #fff;
   transition: 0.1s;
   transform: scale(1.05);
-}
-.error-text {
-  background-color: var(--warning-color);
-  color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  right: 20px;
-  top: 20px;
 }
 .sort-title {
   justify-content: center;
@@ -692,35 +682,13 @@ button:active {
 .no-change-msg {
   color: var(--warning-color);
 }
-.user-notifications {
-  display: flex;
-  position: fixed;
-  right: 15;
-  bottom: 15;
-  padding: 20px;
-  background-color: var(--hover-color);
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-}
+
 @media (max-width: 1500px) {
   .home-page {
     margin-left: 125px;
   }
 }
 @media (max-width: 800px) {
-  .user-notifications {
-    position: fixed;
-    top: 15px;
-    height: 25px;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    margin: 15px;
-    font-weight: 600;
-    align-items: center;
-    justify-content: center;
-  }
   .add-btn,
   .responsive-hidden,
   .user {
@@ -894,10 +862,5 @@ button:active {
   .todo-list-section {
     width: 90vw;
     padding: 0;
-  }
-  .error-text {
-    top: 10;
-    left: 5vw;
-    right: 5vw;
   }
 }

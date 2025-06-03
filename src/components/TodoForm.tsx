@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
-import { errorsManagment } from "./ErrorsManagment";
 import { fetchCategories, changeTodoCategory } from "../api/Api";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
+import { validateAndNotify, notifySuccess } from "./UserNotifications";
 
 type TodoFormProps = Props & {
   todoToEdit?: Todo | null;
@@ -17,7 +17,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [hasChanged, setHasChanged] = useState(false);
@@ -40,7 +39,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
-      setCategory(todoToEdit.category ? todoToEdit.category.id : "");
+      setCategory(todoToEdit.category ? String(todoToEdit.category.id) : "");
     } else {
       setTitle("");
       setDate("");
@@ -54,29 +53,23 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setHasChanged(false);
       return;
     }
-
     const originalTitle = todoToEdit.title || "";
     const originalDate = todoToEdit.due_date || "";
     const originalContent = todoToEdit.content || "";
-    const originalCategory = todoToEdit.category ? todoToEdit.category.id : "";
-
+    const originalCategory = todoToEdit.category
+      ? String(todoToEdit.category.id)
+      : "";
     const isSame =
       title === originalTitle &&
       date === originalDate &&
       content === originalContent &&
       category === originalCategory;
-
     setHasChanged(!isSame);
   }, [title, date, content, category, todoToEdit]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    const errorMsg = errorsManagment(title, date, content);
-    if (errorMsg) {
-      setError(errorMsg);
-      return;
-    }
+    if (!validateAndNotify(title, date, content)) return;
     setLoadingSubmit(true);
     try {
       if (todoToEdit) {
@@ -90,6 +83,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           },
           category === "" ? null : category,
         );
+        notifySuccess("✅ Task updated!");
       } else {
         const newTodo = await onAddTodo({
           title: title.trim(),
@@ -99,6 +93,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
         if (newTodo?.id && category) {
           await changeTodoCategory(String(newTodo.id), category, false);
         }
+        notifySuccess("🆕 Task created!");
         setTitle("");
         setDate("");
         setContent("");
@@ -110,6 +105,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       setLoadingSubmit(false);
     }
   };
+
   return (
     <>
       {loadingCategories || loadingSubmit ? (
@@ -123,10 +119,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
             <button
               type="button"
               className="close-btn"
-              onClick={() => {
-                toggleTodoForm(false);
-                setError(null);
-              }}
+              onClick={() => toggleTodoForm(false)}
             >
               ❌
             </button>
@@ -142,7 +135,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
               autoComplete="off"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
             />
           </div>
 
@@ -156,7 +148,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
             >
               <option value="">No category</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+                <option key={cat.id} value={String(cat.id)}>
                   {cat.title}
                 </option>
               ))}
@@ -185,6 +177,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
+
           <button
             className="simple-button"
             type="submit"
@@ -198,7 +191,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           </button>
         </form>
       )}
-      {error && <div className="error-text">{error}</div>}
     </>
   );
 };

@@ -42,6 +42,9 @@ export async function addTodo(
   todo: NewTodo,
   categoryId?: string | null,
 ): Promise<Todo> {
+  if (!todo.title) {
+    throw new Error("Title is required");
+  }
   const res = await fetch(API_URL, {
     method: "POST",
     headers: { ...headers, Prefer: "return=representation" },

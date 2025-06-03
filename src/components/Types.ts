@@ -10,7 +10,7 @@ export type Todo = {
 
 export type NewTodo = {
   id?: number;
-  title?: string;
+  title: string;
   due_date?: string | null;
   content?: string | null;
   done?: boolean;

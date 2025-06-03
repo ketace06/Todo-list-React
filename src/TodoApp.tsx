@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import HomePage from "./components/HomePage";
 import CategoriesPage from "./components/CategoriesPage";
 import SettingsPage from "./components/SettingsPage";
+import { Toaster } from "sonner";
 
 const TodoApp = () => {
   return (
@@ -14,6 +15,7 @@ const TodoApp = () => {
           <Route path="/category" element={<CategoriesPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
+        <Toaster richColors position="top-right" />
       </div>
     </Router>
   );
