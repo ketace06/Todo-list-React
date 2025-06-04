@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import HomePage from "./components/HomePage";
 import CategoriesPage from "./components/CategoriesPage";
