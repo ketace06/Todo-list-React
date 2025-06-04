@@ -36,13 +36,16 @@ const Sidebar: React.FC = () => {
 
   const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
     if (startYRef.current === null) return;
+
     const currentY = e.touches[0].clientY;
     const diff = currentY - startYRef.current;
-    if (diff < 0) {
-      setPopupTranslateY(diff / 3);
-    } else {
-      setPopupTranslateY(diff);
-    }
+if (diff < 0) {
+  const translateY = Math.max(diff / 3, 0);
+  setPopupTranslateY(translateY);
+} else {
+  setPopupTranslateY(diff);
+}
+
   };
 
   const handleTouchEnd = () => {
@@ -112,8 +115,10 @@ const Sidebar: React.FC = () => {
             }`}
             style={
               popupTranslateY !== 0 && !isClosing
-                ? { transform: `translateY(${popupTranslateY}px)` }
-                : undefined
+                ? {
+                    transform: `translateY(${popupTranslateY}px)`,
+                  }
+                  : undefined
             }
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
