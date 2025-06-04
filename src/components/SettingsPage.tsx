@@ -1,63 +1,47 @@
-import { useEffect, useState } from "react";
+import { useSettingsStore } from "../stores/stores"
 import DayNightToggle from "./DayNightToggle";
-import { setNotificationsEnabled, setPopupEnabled } from "./UserNotifications";
 
 const SettingsPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const stored = localStorage.getItem("darkMode");
-    return stored
-      ? stored === "true"
-      : (window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
-  });
-
-  const [soundEnabled, setSoundEnabled] = useState(() => {
-    return localStorage.getItem("notificationsEnabled") !== "false";
-  });
-
-  const [popupEnabled, setPopupEnabledState] = useState(() => {
-    return localStorage.getItem("popupEnabled") !== "false";
-  });
-
-  useEffect(() => {
-    document.body.classList.toggle("dark-mode", isDarkMode);
-    localStorage.setItem("darkMode", isDarkMode.toString());
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    setNotificationsEnabled(soundEnabled);
-  }, [soundEnabled]);
-
-  useEffect(() => {
-    setPopupEnabled(popupEnabled);
-  }, [popupEnabled]);
+  const {
+    isDarkMode,
+    soundEnabled,
+    popupEnabled,
+    toggleDarkMode,
+    toggleSound,
+    togglePopup,
+  } = useSettingsStore();
 
   return (
     <div className="settings-page">
-      <h1>Settings</h1>
-      <DayNightToggle
-        isDarkMode={isDarkMode}
-        toggleDarkMode={() => setIsDarkMode((prev) => !prev)}
-      />
+      <div className="settings-li">
+        <span>Settings</span>
+        <DayNightToggle
+          isDarkMode={isDarkMode}
+          toggleDarkMode={toggleDarkMode}
+        />
+      </div>
 
-      <div className="sound-toggle">
-        <label>
+      <div className="settings-li">
+        <span>Enable Notification Sounds</span>
+        <label className="switch">
           <input
             type="checkbox"
             checked={soundEnabled}
-            onChange={() => setSoundEnabled((prev) => !prev)}
+            onChange={toggleSound}
           />
-          Enable Notification Sounds
+          <span className="slider round" />
         </label>
       </div>
 
-      <div className="popup-toggle">
-        <label>
+      <div className="settings-li">
+        <span>Enable Notification Popups</span>
+        <label className="switch">
           <input
             type="checkbox"
             checked={popupEnabled}
-            onChange={() => setPopupEnabledState((prev) => !prev)}
+            onChange={togglePopup}
           />
-          Enable Notification Popups
+          <span className="slider round" />
         </label>
       </div>
     </div>
