@@ -1,11 +1,14 @@
-import { BrowserRouter } from "react-router-dom";
-import HomePage from "./components/HomePage";
-function TodoApp() {
-  return (
-    <BrowserRouter basename="/Todo-list-React">
-      <HomePage />
-    </BrowserRouter>
+import React from "react";
+import ReactDOM from "react-dom/client";
+import TodoApp from "./TodoApp";
+import "./components/assets/App.css";
+
+const rootEl = document.getElementById("root");
+if (rootEl) {
+  const root = ReactDOM.createRoot(rootEl);
+  root.render(
+    <React.StrictMode>
+      <TodoApp />
+    </React.StrictMode>,
   );
 }
-
-export default TodoApp;

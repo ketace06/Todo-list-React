@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://ketace06.github.io/Todo-list-React",
   "scripts": {
     "build": "rsbuild build",
     "dev": "rsbuild dev --open",
