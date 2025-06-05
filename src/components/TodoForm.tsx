@@ -6,6 +6,7 @@ import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { validateAndNotify, notifySuccess } from "./UserNotifications";
 import { useTodoFormStore } from "../stores/todoFormStore";
+import { useShallow } from "zustand/react/shallow";
 
 type TodoFormProps = Props & {
   todoToEdit?: Todo | null;
@@ -32,7 +33,28 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
     setHasChanged,
     setTodoToEdit,
     resetForm,
-  } = useTodoFormStore();
+  } = useTodoFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      date: state.date,
+      content: state.content,
+      category: state.category,
+      categories: state.categories,
+      loadingCategories: state.loadingCategories,
+      loadingSubmit: state.loadingSubmit,
+      hasChanged: state.hasChanged,
+      setTitle: state.setTitle,
+      setDate: state.setDate,
+      setContent: state.setContent,
+      setCategory: state.setCategory,
+      setCategories: state.setCategories,
+      setLoadingCategories: state.setLoadingCategories,
+      setLoadingSubmit: state.setLoadingSubmit,
+      setHasChanged: state.setHasChanged,
+      setTodoToEdit: state.setTodoToEdit,
+      resetForm: state.resetForm,
+    })),
+  );
 
   useEffect(() => {
     const loadCategories = async () => {

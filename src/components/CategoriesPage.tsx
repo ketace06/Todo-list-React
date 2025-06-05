@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useCategoriesStore } from "../stores/categoriesStore";
 import CategoryForm from "./CategoryForm";
 import Loader from "./Loader";
+import { useShallow } from "zustand/react/shallow";
 
 const CategoriesPage = () => {
   const {
@@ -13,7 +14,18 @@ const CategoriesPage = () => {
     closeCategoryForm,
     createCategory,
     clearCategories,
-  } = useCategoriesStore();
+  } = useCategoriesStore(
+    useShallow((state) => ({
+      categories: state.categories,
+      loading: state.loading,
+      isCategoryFormOpen: state.isCategoryFormOpen,
+      loadCategories: state.loadCategories,
+      openCategoryForm: state.openCategoryForm,
+      closeCategoryForm: state.closeCategoryForm,
+      createCategory: state.createCategory,
+      clearCategories: state.clearCategories,
+    })),
+  );
 
   useEffect(() => {
     loadCategories();

@@ -1,9 +1,17 @@
+import { useShallow } from "zustand/react/shallow";
 import { useSettingsStore } from "../stores/settingsStore";
 import DayNightToggle from "./DayNightToggle";
 
 const SettingsPage = () => {
   const { soundEnabled, popupEnabled, toggleSound, togglePopup } =
-    useSettingsStore();
+    useSettingsStore(
+      useShallow((state) => ({
+        soundEnabled: state.soundEnabled,
+        popupEnabled: state.popupEnabled,
+        toggleSound: state.toggleSound,
+        togglePopup: state.togglePopup,
+      })),
+    );
 
   return (
     <div className="settings-page">

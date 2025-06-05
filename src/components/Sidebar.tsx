@@ -1,19 +1,30 @@
 import { useRef, type TouchEvent } from "react";
 import { NavLink } from "react-router-dom";
 import { useSidebarStore } from "../stores/sidebarStore";
+import { useShallow } from "zustand/react/shallow";
 
 const Sidebar: React.FC = () => {
-  const popupOpen = useSidebarStore((state) => state.popupOpen);
-  const popupTranslateY = useSidebarStore((state) => state.popupTranslateY);
-  const isClosing = useSidebarStore((state) => state.isClosing);
-  const hasRendered = useSidebarStore((state) => state.hasRendered);
-
-  const setPopupOpen = useSidebarStore((state) => state.setPopupOpen);
-  const setPopupTranslateY = useSidebarStore(
-    (state) => state.setPopupTranslateY,
+  const {
+    popupOpen,
+    popupTranslateY,
+    isClosing,
+    hasRendered,
+    setPopupOpen,
+    setPopupTranslateY,
+    setIsClosing,
+    setHasRendered,
+  } = useSidebarStore(
+    useShallow((state) => ({
+      popupOpen: state.popupOpen,
+      popupTranslateY: state.popupTranslateY,
+      isClosing: state.isClosing,
+      hasRendered: state.hasRendered,
+      setPopupOpen: state.setPopupOpen,
+      setPopupTranslateY: state.setPopupTranslateY,
+      setIsClosing: state.setIsClosing,
+      setHasRendered: state.setHasRendered,
+    })),
   );
-  const setIsClosing = useSidebarStore((state) => state.setIsClosing);
-  const setHasRendered = useSidebarStore((state) => state.setHasRendered);
 
   const startYRef = useRef<number | null>(null);
 

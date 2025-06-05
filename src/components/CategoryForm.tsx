@@ -1,6 +1,7 @@
 import type { CategoryInsert } from "./Types";
 import Loader from "./Loader";
 import { useCategoryFormStore } from "../stores/categoriesStore";
+import { useShallow } from "zustand/react/shallow";
 
 type CategoryFormProps = {
   onClose: () => void;
@@ -9,7 +10,16 @@ type CategoryFormProps = {
 
 const CategoryForm = ({ onClose, onCreate }: CategoryFormProps) => {
   const { title, color, loading, setTitle, setColor, setLoading } =
-    useCategoryFormStore();
+    useCategoryFormStore(
+      useShallow((state) => ({
+        title: state.title,
+        color: state.color,
+        loading: state.loading,
+        setTitle: state.setTitle,
+        setColor: state.setColor,
+        setLoading: state.setLoading,
+      })),
+    );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

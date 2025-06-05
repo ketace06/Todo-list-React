@@ -5,6 +5,7 @@ import TodoBtn from "./TodoBtn";
 import { TodoListSection, type SortOptions } from "./TodoListSection";
 import { useTodosStore } from "../stores/todosStateStore";
 import { Todo } from "./Types";
+import { useShallow } from "zustand/react/shallow";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +20,19 @@ const HomePage = () => {
     sortBy,
     setSortBy,
     loadTodos,
-  } = useTodosStore();
+  } = useTodosStore(
+    useShallow((state) => ({
+      todos: state.todos,
+      handleAddTodo: state.handleAddTodo,
+      handleDeleteTodo: state.handleDeleteTodo,
+      handleEditTodo: state.handleEditTodo,
+      todoToEdit: state.todoToEdit,
+      setTodoToEdit: state.setTodoToEdit,
+      sortBy: state.sortBy,
+      setSortBy: state.setSortBy,
+      loadTodos: state.loadTodos,
+    })),
+  );
 
   const sortParam = searchParams.get("sort") as SortOptions | null;
 

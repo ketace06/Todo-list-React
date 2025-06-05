@@ -3,6 +3,7 @@ import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
 import { useTodoListStore } from "../stores/todoFormStore";
+import { useShallow } from "zustand/react/shallow";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -19,7 +20,14 @@ const TodoListSection = ({
   sortBy,
 }: TodoListProps) => {
   const { deletingId, togglingId, setDeletingId, setTogglingId } =
-    useTodoListStore();
+    useTodoListStore(
+      useShallow((state) => ({
+        deletingId: state.deletingId,
+        togglingId: state.togglingId,
+        setDeletingId: state.setDeletingId,
+        setTogglingId: state.setTogglingId,
+      })),
+    );
 
   let filteredTodos = todos.slice();
   let statusTitle = "";
