@@ -1,13 +1,20 @@
-import { useState, useRef, type TouchEvent } from "react";
+import { useRef, type TouchEvent } from "react";
 import { NavLink } from "react-router-dom";
+import { useSidebarStore } from "../stores/sidebarStore";
 
 const Sidebar: React.FC = () => {
-  const [popupOpen, setPopupOpen] = useState<"overview" | "account" | null>(
-    null,
+  const popupOpen = useSidebarStore((state) => state.popupOpen);
+  const popupTranslateY = useSidebarStore((state) => state.popupTranslateY);
+  const isClosing = useSidebarStore((state) => state.isClosing);
+  const hasRendered = useSidebarStore((state) => state.hasRendered);
+
+  const setPopupOpen = useSidebarStore((state) => state.setPopupOpen);
+  const setPopupTranslateY = useSidebarStore(
+    (state) => state.setPopupTranslateY,
   );
-  const [popupTranslateY, setPopupTranslateY] = useState(0);
-  const [isClosing, setIsClosing] = useState(false);
-  const [hasRendered, setHasRendered] = useState(false);
+  const setIsClosing = useSidebarStore((state) => state.setIsClosing);
+  const setHasRendered = useSidebarStore((state) => state.setHasRendered);
+
   const startYRef = useRef<number | null>(null);
 
   const openPopup = (section: "overview" | "account") => {

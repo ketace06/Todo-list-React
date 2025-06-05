@@ -1,15 +1,19 @@
-type Props = {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-};
+import { useShallow } from "zustand/react/shallow";
+import { useSettingsStore } from "../stores/settingsStore";
 
-const DayNightToggle = ({ isDarkMode, toggleDarkMode }: Props) => {
+const DayNightToggle = () => {
+  const { darkMode, toggleMode } = useSettingsStore(
+    useShallow((state) => ({
+      darkMode: state.isDarkMode,
+      toggleMode: state.toggleDarkMode,
+    })),
+  );
+
   return (
     <label className="switch">
-      <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+      <input type="checkbox" checked={darkMode} onChange={toggleMode} />
       <span className="slider round" />
     </label>
   );
 };
-
 export default DayNightToggle;

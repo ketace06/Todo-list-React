@@ -274,7 +274,7 @@ select {
   transition:
     opacity 0.3s,
     transform 0.3s;
-  z-index: 5;
+  z-index: 3;
 }
 .categories-grid,
 .todo-form-popup,
@@ -285,7 +285,7 @@ select {
 }
 .sidebar {
   position: fixed;
-  z-index: 10;
+  z-index: 4;
 }
 .title-formclose-btn {
   display: flex;
@@ -379,8 +379,6 @@ select {
 }
 .todo-list {
   background: #fff;
-  backdrop-filter: blur(10px);
-
   border-radius: 20px;
   gap: 18px;
   max-height: 500px;
@@ -618,6 +616,7 @@ select {
 .rounded-btn {
   display: none;
   font-size: xx-large;
+  z-index: 2;
 }
 .category-form-popup {
   display: none;
@@ -630,19 +629,19 @@ select {
   transition:
     opacity 0.3s,
     transform 0.3s;
-  z-index: 5;
+  z-index: 3;
   padding: 30px;
   justify-content: space-between;
 }
 .loader,
 .loader-container {
   position: fixed;
-  z-index: 1000;
+  z-index: 3;
 }
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #3498db;
+  border-top: 16px solid var(--hover-color);
   width: 120px;
   height: 120px;
   -webkit-animation: 1.5s infinite spin;
@@ -789,7 +788,7 @@ button:active {
       transform 0.35s ease,
       opacity 0.35s ease;
     touch-action: none;
-    z-index: 1000;
+    z-index: 6;
     display: flex;
     flex-direction: column;
     opacity: 1;
@@ -814,7 +813,7 @@ button:active {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.4);
-    z-index: 999;
+    z-index: 5;
   }
 
   .drawer-handle {

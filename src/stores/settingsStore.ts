@@ -1,7 +1,10 @@
-import { create } from 'zustand';
-import { setNotificationsEnabled, setPopupEnabled } from '../components/UserNotifications';
+import { create } from "zustand";
+import {
+  setNotificationsEnabled,
+  setPopupEnabled,
+} from "../components/UserNotifications";
 
-interface SettingsState {
+type SettingsState = {
   isDarkMode: boolean;
   soundEnabled: boolean;
   popupEnabled: boolean;
@@ -9,14 +12,14 @@ interface SettingsState {
   toggleDarkMode: () => void;
   toggleSound: () => void;
   togglePopup: () => void;
-}
+};
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   isDarkMode: (() => {
     const stored = localStorage.getItem("darkMode");
     return stored
       ? stored === "true"
-      : window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+      : (window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
   })(),
 
   soundEnabled: localStorage.getItem("notificationsEnabled") !== "false",

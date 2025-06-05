@@ -1,26 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import TodoForm from "./TodoForm";
 import TodoBtn from "./TodoBtn";
 import { TodoListSection, type SortOptions } from "./TodoListSection";
-import { useTodos } from "./CustomHook";
-import type { Todo } from "./Types";
+import { useTodosStore } from "../stores/todosStateStore";
+import { Todo } from "./Types";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
+
+  const {
+    todos,
+    handleAddTodo,
+    handleDeleteTodo,
+    handleEditTodo,
+    todoToEdit,
+    setTodoToEdit,
+    sortBy,
+    setSortBy,
+    loadTodos,
+  } = useTodosStore();
 
   const sortParam = searchParams.get("sort") as SortOptions | null;
-  const [sortBy, setSortBy] = useState<SortOptions>(sortParam || "recent");
 
-  const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
+  useEffect(() => {
+    loadTodos();
+  }, [loadTodos]);
 
   useEffect(() => {
     if (sortBy !== sortParam) {
-      searchParams.set("sort", sortBy);
-      setSearchParams(searchParams);
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.set("sort", sortBy);
+      setSearchParams(newParams);
     }
-  }, [searchParams, setSearchParams, sortBy, sortParam]);
+  }, [sortBy, sortParam, searchParams, setSearchParams]);
 
   return (
     <div className="home-page">

@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
 import { fetchCategories, changeTodoCategory } from "./assets/api/Api";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { validateAndNotify, notifySuccess } from "./UserNotifications";
+import { useTodoFormStore } from "../stores/todoFormStore";
 
 type TodoFormProps = Props & {
   todoToEdit?: Todo | null;
@@ -12,14 +13,26 @@ type TodoFormProps = Props & {
 };
 
 const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [hasChanged, setHasChanged] = useState(false);
+  const {
+    title,
+    date,
+    content,
+    category,
+    categories,
+    loadingCategories,
+    loadingSubmit,
+    hasChanged,
+    setTitle,
+    setDate,
+    setContent,
+    setCategory,
+    setCategories,
+    setLoadingCategories,
+    setLoadingSubmit,
+    setHasChanged,
+    setTodoToEdit,
+    resetForm,
+  } = useTodoFormStore();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -32,21 +45,27 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       }
     };
     loadCategories();
-  }, []);
+  }, [setCategories, setLoadingCategories]);
 
   useEffect(() => {
+    setTodoToEdit(todoToEdit ?? null);
     if (todoToEdit) {
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
       setCategory(todoToEdit.category ? String(todoToEdit.category.id) : "");
     } else {
-      setTitle("");
-      setDate("");
-      setContent("");
-      setCategory("");
+      resetForm();
     }
-  }, [todoToEdit]);
+  }, [
+    resetForm,
+    setCategory,
+    setContent,
+    setDate,
+    setTitle,
+    setTodoToEdit,
+    todoToEdit,
+  ]);
 
   useEffect(() => {
     if (!todoToEdit) {
@@ -65,7 +84,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       content === originalContent &&
       category === originalCategory;
     setHasChanged(!isSame);
-  }, [title, date, content, category, todoToEdit]);
+  }, [title, date, content, category, todoToEdit, setHasChanged]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -94,10 +113,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           await changeTodoCategory(String(newTodo.id), category);
         }
         notifySuccess("Task created!");
-        setTitle("");
-        setDate("");
-        setContent("");
-        setCategory("");
+        resetForm();
       }
       setLoadingSubmit(false);
       toggleTodoForm(false);

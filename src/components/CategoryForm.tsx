@@ -1,6 +1,6 @@
-import { useState } from "react";
 import type { CategoryInsert } from "./Types";
 import Loader from "./Loader";
+import { useCategoryFormStore } from "../stores/categoriesStore";
 
 type CategoryFormProps = {
   onClose: () => void;
@@ -8,9 +8,8 @@ type CategoryFormProps = {
 };
 
 const CategoryForm = ({ onClose, onCreate }: CategoryFormProps) => {
-  const [title, setTitle] = useState("");
-  const [color, setColor] = useState("#cccccc");
-  const [loading, setLoading] = useState(false);
+  const { title, color, loading, setTitle, setColor, setLoading } =
+    useCategoryFormStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

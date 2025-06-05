@@ -1,24 +1,15 @@
-import { useSettingsStore } from "../stores/stores"
+import { useSettingsStore } from "../stores/settingsStore";
 import DayNightToggle from "./DayNightToggle";
 
 const SettingsPage = () => {
-  const {
-    isDarkMode,
-    soundEnabled,
-    popupEnabled,
-    toggleDarkMode,
-    toggleSound,
-    togglePopup,
-  } = useSettingsStore();
+  const { soundEnabled, popupEnabled, toggleSound, togglePopup } =
+    useSettingsStore();
 
   return (
     <div className="settings-page">
       <div className="settings-li">
-        <span>Settings</span>
-        <DayNightToggle
-          isDarkMode={isDarkMode}
-          toggleDarkMode={toggleDarkMode}
-        />
+        <span>Toggle day/night theme</span>
+        <DayNightToggle />
       </div>
 
       <div className="settings-li">

@@ -1,8 +1,8 @@
-import { useState } from "react";
 import type { Props } from "./Types";
 import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
+import { useTodoListStore } from "../stores/todoFormStore";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -18,8 +18,8 @@ const TodoListSection = ({
   onToggleDone,
   sortBy,
 }: TodoListProps) => {
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [togglingId, setTogglingId] = useState<number | null>(null);
+  const { deletingId, togglingId, setDeletingId, setTogglingId } =
+    useTodoListStore();
 
   let filteredTodos = todos.slice();
   let statusTitle = "";
