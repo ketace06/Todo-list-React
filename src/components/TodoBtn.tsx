@@ -1,4 +1,4 @@
-import { toggleTodoForm } from "./TodoFormState";
+import { useTodoFormUIStore } from "../stores/todoFormStore";
 import type { SortOptions } from "./TodoListSection";
 
 export const TodoBtn = ({
@@ -10,6 +10,13 @@ export const TodoBtn = ({
   sortBy: string;
   setSortBy: (value: SortOptions) => void;
 }) => {
+  const { setOpen } = useTodoFormUIStore();
+
+  const handleClick = () => {
+    onAddTaskClick();
+    setOpen(true); 
+  };
+
   const stringToSortOption = (data: string): SortOptions => {
     switch (data) {
       case "recent":
@@ -23,55 +30,24 @@ export const TodoBtn = ({
       case "no-todos":
         return "no-todos";
       default:
-        throw new Error(`This sort option is not supported : ${data}`);
+        throw new Error(`This sort option is not supported: ${data}`);
     }
   };
+
   return (
     <>
       <div className="add-btn">
-        <button
-          className="simple-button"
-          type="button"
-          onClick={() => {
-            onAddTaskClick();
-            const form = document.querySelector(
-              ".todo-form-popup",
-            ) as HTMLElement;
-            if (
-              form &&
-              form.style.display !== "flex" &&
-              form.style.opacity !== "1"
-            ) {
-              toggleTodoForm(true);
-            }
-          }}
-        >
+        <button className="simple-button" type="button" onClick={handleClick}>
           Add a Task
         </button>
       </div>
       <div className="add-btn-responsive">
-        <button
-          className="rounded-btn"
-          type="button"
-          onClick={() => {
-            onAddTaskClick();
-            const form = document.querySelector(
-              ".todo-form-popup",
-            ) as HTMLElement;
-            if (
-              form &&
-              form.style.display !== "flex" &&
-              form.style.opacity !== "1"
-            ) {
-              toggleTodoForm(true);
-            }
-          }}
-        >
+        <button className="rounded-btn" type="button" onClick={handleClick}>
           +
         </button>
       </div>
       <select
-        className="select-filter"
+        id="select-filter"
         value={sortBy}
         onChange={(e) => setSortBy(stringToSortOption(e.target.value))}
       >
@@ -84,4 +60,4 @@ export const TodoBtn = ({
   );
 };
 
-export default TodoBtn;
+export default TodoBtn

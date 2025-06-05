@@ -67,3 +67,17 @@ export const useTodoListStore = create<TodoListState>((set) => ({
   setDeletingId: (id: number | null) => set(() => ({ deletingId: id })),
   setTogglingId: (id: number | null) => set(() => ({ togglingId: id })),
 }));
+
+type TodoFormUIState = {
+  isOpen: boolean;
+  isClosing: boolean;
+  setOpen: (open: boolean) => void;
+  setIsClosing: (closing: boolean) => void;
+};
+
+export const useTodoFormUIStore = create<TodoFormUIState>((set) => ({
+  isOpen: false,
+  isClosing: false,
+  setOpen: (isOpen) => set({ isOpen }),
+  setIsClosing: (isClosing) => set({ isClosing }),
+}));

@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
 import { fetchCategories, changeTodoCategory } from "./assets/api/Api";
-import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { validateAndNotify, notifySuccess } from "./UserNotifications";
-import { useTodoFormStore } from "../stores/todoFormStore";
+import { useTodoFormStore, useTodoFormUIStore } from "../stores/todoFormStore";
 import { useShallow } from "zustand/react/shallow";
 
 type TodoFormProps = Props & {
@@ -55,6 +54,8 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       resetForm: state.resetForm,
     })),
   );
+
+  const { isOpen, isClosing, setOpen, setIsClosing } = useTodoFormUIStore();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -108,9 +109,21 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
     setHasChanged(!isSame);
   }, [title, date, content, category, todoToEdit, setHasChanged]);
 
+  if (!isOpen && !isClosing) return null;
+
+  const closePopup = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setOpen(false);
+      setIsClosing(false);
+      resetForm();
+    }, 350);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!validateAndNotify(title, date, content)) return;
+
     setLoadingSubmit(true);
     try {
       if (todoToEdit) {
@@ -138,7 +151,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
         resetForm();
       }
       setLoadingSubmit(false);
-      toggleTodoForm(false);
+      closePopup();
     } catch {
       setLoadingSubmit(false);
     }
@@ -151,83 +164,95 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           <Loader />
         </div>
       ) : (
-        <form className="todo-form-popup" onSubmit={handleSubmit}>
-          <div className="title-formclose-btn">
-            <h1>{todoToEdit ? "Modify Task" : "Create Task"}</h1>
-            <button
-              type="button"
-              className="close-btn"
-              onClick={() => toggleTodoForm(false)}
-            >
-              ❌
-            </button>
-          </div>
-
-          <div className="form">
-            <p className="p-form">Title*</p>
-            <input
-              className="input-text"
-              type="text"
-              name="title"
-              placeholder="What will you do?"
-              autoComplete="off"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          <div className="form">
-            <p className="p-form">Category</p>
-            <select
-              className="input-text"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">No category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={String(cat.id)}>
-                  {cat.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form">
-            <p className="p-form">Date</p>
-            <input
-              className="input-text"
-              type="date"
-              name="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
-
-          <div className="form">
-            <p className="p-form">Description</p>
-            <textarea
-              className="p-description"
-              name="content"
-              placeholder="Add a description"
-              autoComplete="off"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
-
-          <button
-            className="simple-button"
-            type="submit"
-            disabled={loadingSubmit || Boolean(todoToEdit && !hasChanged)}
+        <div
+          className={`form-backdrop ${isOpen ? "open" : ""} ${
+            isClosing ? "closing" : ""
+          }`}
+          onClick={closePopup}
+          style={{
+            pointerEvents: isOpen || isClosing ? "auto" : "none",
+          }}
+        >
+          <form
+            className={`todo-form-popup ${isOpen ? "open" : ""} ${
+              isClosing ? "closing" : ""
+            }`}
+            onSubmit={handleSubmit}
+            onClick={(e) => e.stopPropagation()}
           >
-            {todoToEdit && !hasChanged
-              ? "No changes to save"
-              : todoToEdit
-                ? "Modify"
-                : "Create"}
-          </button>
-        </form>
+            <div className="title-formclose-btn">
+              <h1>{todoToEdit ? "Modify Task" : "Create Task"}</h1>
+              <button type="button" className="close-btn" onClick={closePopup}>
+                ❌
+              </button>
+            </div>
+
+            <div className="form">
+              <p className="p-form">Title*</p>
+              <input
+                className="input-text"
+                type="text"
+                name="title"
+                placeholder="What will you do?"
+                autoComplete="off"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="form">
+              <p className="p-form">Category</p>
+              <select
+                className="input-text"
+                name="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">No category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={String(cat.id)}>
+                    {cat.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form">
+              <p className="p-form">Date</p>
+              <input
+                className="input-text"
+                type="date"
+                name="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+
+            <div className="form">
+              <p className="p-form">Description</p>
+              <textarea
+                className="p-description"
+                name="content"
+                placeholder="Add a description"
+                autoComplete="off"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
+
+            <button
+              className="simple-button"
+              type="submit"
+              disabled={loadingSubmit || Boolean(todoToEdit && !hasChanged)}
+            >
+              {todoToEdit && !hasChanged
+                ? "No changes to save"
+                : todoToEdit
+                  ? "Modify"
+                  : "Create"}
+            </button>
+          </form>
+        </div>
       )}
     </>
   );

@@ -1,5 +1,5 @@
 import type { Props } from "./Types";
-import { toggleTodoForm } from "./TodoFormState";
+import { toggleTodoForm } from "../stores/sidebarStore";
 import Loader from "./Loader";
 import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
 import { useTodoListStore } from "../stores/todoFormStore";
@@ -93,7 +93,9 @@ const TodoListSection = ({
   return (
     <>
       {todos.length === 0 ? (
-        <span className="sort-title">No todos to display!</span>
+        <ul className="todo-list">
+          <span className="sort-title">No todos to display!</span>
+        </ul>
       ) : (
         <ul className="todo-list">
           <span className="sort-title">

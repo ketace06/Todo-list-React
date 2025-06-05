@@ -2,30 +2,15 @@ import { toast } from "sonner";
 import errorSound from "./assets/Sounds/Error.mp3";
 import notifSound from "./assets/Sounds/Notif.mp3";
 import successSound from "./assets/Sounds/Success.mp3";
+import { useSettingsStore } from "../stores/settingsStore";
 
 const SOUND_SUCCESS = successSound;
 const SOUND_ERROR = errorSound;
 const SOUND_INFO = notifSound;
 
-let notificationsEnabled =
-  localStorage.getItem("notificationsEnabled") !== "false";
-let popupEnabled = localStorage.getItem("popupEnabled") !== "false";
-
-export const setNotificationsEnabled = (enabled: boolean) => {
-  notificationsEnabled = enabled;
-  localStorage.setItem("notificationsEnabled", enabled.toString());
-};
-
-export const setPopupEnabled = (enabled: boolean) => {
-  popupEnabled = enabled;
-  localStorage.setItem("popupEnabled", enabled.toString());
-};
-
-export const getNotificationsEnabled = () => notificationsEnabled;
-export const getPopupEnabled = () => popupEnabled;
-
 const playSound = (soundUrl: string) => {
-  if (!notificationsEnabled) return;
+  const soundEnabled = useSettingsStore.getState().soundEnabled;
+  if (!soundEnabled) return;
   try {
     const audio = new Audio(soundUrl);
     audio.play().catch(() => {});
@@ -35,17 +20,20 @@ const playSound = (soundUrl: string) => {
 };
 
 export const notifyError = (message: string) => {
-  if (notificationsEnabled) playSound(SOUND_ERROR);
+  const { soundEnabled, popupEnabled } = useSettingsStore.getState();
+  if (soundEnabled) playSound(SOUND_ERROR);
   if (popupEnabled) toast.error(message);
 };
 
 export const notifySuccess = (message: string) => {
-  if (notificationsEnabled) playSound(SOUND_SUCCESS);
+  const { soundEnabled, popupEnabled } = useSettingsStore.getState();
+  if (soundEnabled) playSound(SOUND_SUCCESS);
   if (popupEnabled) toast.success(message);
 };
 
 export const notifyInfo = (message: string) => {
-  if (notificationsEnabled) playSound(SOUND_INFO);
+  const { soundEnabled, popupEnabled } = useSettingsStore.getState();
+  if (soundEnabled) playSound(SOUND_INFO);
   if (popupEnabled) toast.info(message);
 };
 

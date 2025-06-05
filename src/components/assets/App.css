@@ -70,7 +70,7 @@ body {
 :root {
   --background-color: #e3f2fd;
   --primary-color: #0277bd;
-  --secondary-color: #ffffff;
+  --secondary-color: #fff;
   --border-color: #81d4fa;
   --third-color: #b3e5fc;
   --nav-color: #01579b;
@@ -93,7 +93,7 @@ body.dark-mode {
 .dark-mode .category-form-popup,
 .dark-mode .input-text,
 .dark-mode .p-description,
-.dark-mode .select-filter,
+.dark-mode #select-filter,
 .dark-mode .task-item,
 .dark-mode .todo-form-popup,
 .dark-mode .todo-list {
@@ -101,7 +101,6 @@ body.dark-mode {
   color: #f5f6fa;
   border-color: var(--border-color);
 }
-
 .dark-mode .delete-edit-button button:hover,
 .dark-mode .simple-button {
   background-color: var(--primary-color);
@@ -238,14 +237,27 @@ select {
 }
 .simple-button {
   background-color: var(--primary-color);
-  color: #fff;
   font-weight: 600;
   padding: 10px 30px;
+  color: #fff;
+  background: linear-gradient(
+    to bottom,
+    #e0f7ff 0%,
+    #a0d4e8 30%,
+    #0080ff 70%,
+    #6ab4d1 100%
+  );
+  box-shadow: 0 6px 20px #0080ff66 inset 0 1px 0 #fff9 inset 0 -1px 2px
+    #0000001a;
+  border: 1px solid #66b3ff;
+  border-radius: 16px;
   border-radius: 12px;
+  transition: all 0.3s ease;
 }
 .simple-button:hover {
-  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.15);
-  background-color: #005ecb;
+  background: linear-gradient(to bottom, #fff 0%, #b3e0ff 50%, #09f 100%);
+  box-shadow: 0 8px 24px #0080ff80 inset 0 1px 1px #fffc;
+  transform: translateY(-2px);
 }
 .actions-btn {
   display: flex;
@@ -254,7 +266,7 @@ select {
   width: 70%;
   margin-top: 20px;
 }
-.select-filter {
+#select-filter {
   background-color: var(--third-color);
   color: #1c1c1e;
   padding: 10px;
@@ -265,7 +277,6 @@ select {
   border: 1px solid var(--border-color);
 }
 .todo-form-popup {
-  display: none;
   position: fixed;
   flex-direction: column;
   gap: 20px;
@@ -275,13 +286,18 @@ select {
     opacity 0.3s,
     transform 0.3s;
   z-index: 3;
+  width: 50vw;
+  max-width: 600px;
+  padding: 30px;
+  box-sizing: border-box;
+  margin: auto;
+  left: 0;
+  right: 0;
 }
 .categories-grid,
 .todo-form-popup,
 .todo-list {
-  box-shadow:
-    0 4px 8px 0 rgba(0, 0, 0, 0.2),
-    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 #0003 0 6px 20px 0 #00000030;
 }
 .sidebar {
   position: fixed;
@@ -454,15 +470,6 @@ select {
   padding: 20px;
   max-width: 1200px;
 }
-.todo-form-popup {
-  width: 50vw;
-  max-width: 600px;
-  padding: 30px;
-  box-sizing: border-box;
-  margin: auto;
-  left: 0;
-  right: 0;
-}
 .todo-list {
   padding: 40px;
 }
@@ -482,20 +489,17 @@ select {
   color: #fff;
   font-family: Frutiger, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.1rem;
-  background: rgba(255, 255, 255, 0.15);
+  background: #ffffff26;
   border-radius: 12px;
   padding: 8px 16px;
-  border: 1px solid rgba(127, 104, 104, 0.3);
+  border: 1px solid #7f68684d;
 }
-
 .user .circle {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: linear-gradient(145deg, #4a90e2, #1c3f95);
-  box-shadow:
-    inset 2px 2px 5px rgba(255, 255, 255, 0.6),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 2px 2px 5px #fff9 inset -2px -2px 5px #0009;
   position: relative;
 }
 .user .circle::before {
@@ -505,14 +509,14 @@ select {
   left: 8px;
   width: 24px;
   height: 12px;
-  background: rgba(255, 255, 255, 0.5);
+  background: #ffffff80;
   border-radius: 20px/10px;
   filter: blur(1px);
   transform: rotate(-15deg);
   pointer-events: none;
 }
 .user span:last-child {
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 3px #0000004d;
 }
 .categories-page,
 .sidebar-list {
@@ -551,13 +555,12 @@ select {
   backdrop-filter: blur(10px);
   box-shadow:
     inset 0 0 8px #ffffffcc,
-    0 4px 12px rgba(0, 0, 0, 0.4);
+    0 4px 12px #0006;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   font-family: "Segoe UI", sans-serif;
 }
-
 .sidebar-list {
   list-style: none;
   padding: 0;
@@ -566,14 +569,12 @@ select {
   flex-direction: column;
   gap: 10px;
 }
-
 .sidebar-li {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #88c0e0;
   padding-bottom: 4px;
 }
-
 .sidebar-li a {
   color: #000;
   text-decoration: none;
@@ -584,15 +585,13 @@ select {
   border-radius: 8px;
   transition: all 0.2s ease;
 }
-
 .sidebar-li a:hover {
   background: linear-gradient(to right, #b0eaff, #a0dbff);
-  color: #0066cc;
+  color: #06c;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0, 153, 255, 0.4);
+  box-shadow: 0 2px 8px #09f6;
   transform: scale(1.03);
 }
-
 .categories-page {
   align-items: center;
   justify-content: center;
@@ -625,7 +624,7 @@ select {
   gap: 20px;
   background-color: #fff;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(60, 60, 67, 0.15);
+  box-shadow: 0 8px 32px #3c3c4326;
   transition:
     opacity 0.3s,
     transform 0.3s;
@@ -655,11 +654,10 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #ffffff80;
 }
 .category-form-popup,
 .todo-form-popup {
-  opacity: 0;
   transform: translateY(30px) scale(0.98);
   animation: 0.55s cubic-bezier(0.4, 0, 0.2, 1) popup-fade-in;
 }
@@ -669,7 +667,7 @@ select {
 .rounded-btn:active,
 .simple-button:active,
 button:active {
-  transition: transform 0.1s;
+  transition: all 0.2s ease;
 }
 .category-form-popup.hide,
 .todo-form-popup.hide {
@@ -685,9 +683,7 @@ button:active {
   border-radius: 12px;
   background: linear-gradient(145deg, #f0f4f8, #d9e2ec);
   cursor: pointer;
-  box-shadow:
-    inset 0 4px 6px rgba(255, 255, 255, 0.9),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 4px 6px #ffffffe6 inset 0 -3px 6px #0000001a;
   transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease;
@@ -710,6 +706,22 @@ button:active {
   height: 100%;
   justify-content: center;
 }
+.categories-button {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-backdrop {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
 @media (max-width: 1500px) {
   .home-page {
     margin-left: 125px;
@@ -718,11 +730,14 @@ button:active {
     width: 80%;
     margin-left: 150px;
   }
+  .popup-drawer {
+    display: none;
+  }
 }
 @media (max-width: 800px) {
   .settings-page {
     width: 80%;
-    margin-left: 0px;
+    margin-left: 0;
   }
   .add-btn,
   .responsive-hidden,
@@ -734,15 +749,16 @@ button:active {
     color: #fff;
     background: linear-gradient(
       to bottom,
-      #a0d4e8 0%,
-      #0080ff 50%,
+      #e0f7ff 0%,
+      #a0d4e8 30%,
+      #0080ff 70%,
       #6ab4d1 100%
     );
-    border: 1px solid #4682b4;
+    border: 2px solid #66b3ff;
+    border-radius: 16px;
     border-radius: 12px;
-    box-shadow:
-      0 4px 10px rgba(0, 0, 0, 0.2),
-      inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px #0080ff66 inset 0 1px 0 #fff9 inset 0 -1px 2px
+      #0000001a;
     gap: 2rem;
     padding: 0.9rem;
     pointer-events: auto;
@@ -750,7 +766,6 @@ button:active {
     text-align: center;
     margin: 0 20px;
   }
-
   .drawer-list li {
     align-items: center;
     gap: 0.5rem;
@@ -776,12 +791,12 @@ button:active {
     bottom: 0;
     left: 15px;
     right: 15px;
-    height: 25vh;
+    min-height: 30vh;
+    padding: 20px;
     background: #fff;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-    padding: 1.5rem 2rem 2rem;
+    box-shadow: 0 -2px 10px #0003;
     overflow-y: auto;
     transform: translateY(100%);
     transition:
@@ -793,29 +808,24 @@ button:active {
     flex-direction: column;
     opacity: 1;
   }
-
   .popup-drawer.open {
     transform: translateY(0%);
   }
-
   .popup-drawer.closing {
     transform: translateY(100%);
   }
-
   .popup-drawer.dragging {
     transition: none !important;
   }
-
   .drawer-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: #0006;
     z-index: 5;
   }
-
   .drawer-handle {
     width: 50px;
     height: 5px;
@@ -823,7 +833,6 @@ button:active {
     border-radius: 5px;
     margin: 0 auto 10px;
   }
-
   .close-btn {
     position: absolute;
     right: 1.5rem;
@@ -870,13 +879,19 @@ button:active {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: var(--primary-color);
     color: #fff;
-    box-shadow:
-      inset 2px 2px 5px rgba(255, 255, 255, 0.6),
-      inset -2px -2px 5px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(
+      to bottom,
+      #e0f7ff 0%,
+      #a0d4e8 30%,
+      #0080ff 70%,
+      #6ab4d1 100%
+    );
+    box-shadow: 0 6px 20px #0080ff66 inset 0 1px 0 #fff9 inset 0 -1px 2px
+      #0000001a;
+    border: 1px solid var(--border-color);
   }
-  .select-filter {
+  #select-filter {
     width: 75%;
     max-width: none;
     padding: 15px;
@@ -929,14 +944,12 @@ button:active {
     padding: 0;
   }
 }
-
 @media screen and (max-width: 1000px) and (orientation: landscape) {
   .todo-list {
     padding: 20px;
     max-height: none;
     overflow-y: auto;
   }
-
   .todo-form-popup,
   .category-form-popup {
     width: 50vw;
