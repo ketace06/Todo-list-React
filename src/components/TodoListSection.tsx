@@ -100,7 +100,7 @@ const TodoListSection = ({
         <ul className="todo-list">
           <span className="sort-title">
             {sortBy === "recent"
-              ? "Recently added"
+              ? "Recently created"
               : sortBy === "date"
                 ? dueDateTitle
                 : sortBy === "alphabetical"

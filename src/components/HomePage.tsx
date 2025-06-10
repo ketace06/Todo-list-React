@@ -6,6 +6,7 @@ import { TodoListSection, type SortOptions } from "./TodoListSection";
 import { useTodosStore } from "../stores/todosStateStore";
 import { Todo } from "./Types";
 import { useShallow } from "zustand/react/shallow";
+import { useTodoFormUIStore } from "../stores/todoFormStore";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,11 +35,18 @@ const HomePage = () => {
     })),
   );
 
-  const sortParam = searchParams.get("sort") as SortOptions | null;
+  const { setOpen } = useTodoFormUIStore();
+
+  useEffect(() => {
+    setOpen(false);
+    setTodoToEdit(null);
+  }, [setOpen, setTodoToEdit]);
 
   useEffect(() => {
     loadTodos();
   }, [loadTodos]);
+
+  const sortParam = searchParams.get("sort") as SortOptions | null;
 
   useEffect(() => {
     if (sortBy !== sortParam) {
@@ -75,7 +83,7 @@ const HomePage = () => {
           onDeleteTodo={handleDeleteTodo}
           onEditTodo={(todo) => {
             if (todo.id !== undefined) {
-              setTodoToEdit(todo as Todo);
+              setTodoToEdit({ ...(todo as Todo) });
             }
           }}
           onToggleDone={async (id: number, done: boolean) => {

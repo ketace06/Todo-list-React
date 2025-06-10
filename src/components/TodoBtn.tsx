@@ -14,7 +14,7 @@ export const TodoBtn = ({
 
   const handleClick = () => {
     onAddTaskClick();
-    setOpen(true); 
+    setOpen(true);
   };
 
   const stringToSortOption = (data: string): SortOptions => {
@@ -60,4 +60,4 @@ export const TodoBtn = ({
   );
 };
 
-export default TodoBtn
+export default TodoBtn;

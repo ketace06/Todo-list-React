@@ -55,7 +55,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
     })),
   );
 
-  const { isOpen, isClosing, setOpen, setIsClosing } = useTodoFormUIStore();
+  const { isOpen, isClosing, setOpen } = useTodoFormUIStore();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -73,6 +73,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
   useEffect(() => {
     setTodoToEdit(todoToEdit ?? null);
     if (todoToEdit) {
+      setOpen(true);
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
@@ -88,6 +89,7 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
     setTitle,
     setTodoToEdit,
     todoToEdit,
+    setOpen,
   ]);
 
   useEffect(() => {
@@ -112,12 +114,9 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
   if (!isOpen && !isClosing) return null;
 
   const closePopup = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setOpen(false);
-      setIsClosing(false);
-      resetForm();
-    }, 350);
+    setOpen(false);
+    resetForm();
+    setTodoToEdit(null);
   };
 
   const handleSubmit = async (e: FormEvent) => {
