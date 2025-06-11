@@ -41,7 +41,7 @@ export const TodoBtn = ({
           Add a Task
         </button>
       </div>
-      <div className="add-btn-responsive">
+      <div>
         <button className="rounded-btn" type="button" onClick={handleClick}>
           +
         </button>

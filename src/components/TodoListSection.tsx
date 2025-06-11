@@ -1,8 +1,7 @@
 import type { Props } from "./Types";
-import { toggleTodoForm } from "../stores/sidebarStore";
 import Loader from "./Loader";
 import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
-import { useTodoListStore } from "../stores/todoFormStore";
+import { useTodoFormUIStore, useTodoListStore } from "../stores/todoFormStore";
 import { useShallow } from "zustand/react/shallow";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
@@ -28,6 +27,7 @@ const TodoListSection = ({
         setTogglingId: state.setTogglingId,
       })),
     );
+  const { setOpen } = useTodoFormUIStore();
 
   let filteredTodos = todos.slice();
   let statusTitle = "";
@@ -166,7 +166,7 @@ const TodoListSection = ({
                         className="Edit"
                         type="button"
                         onClick={() => {
-                          toggleTodoForm(true);
+                          setOpen(true);
                           onEditTodo(todo);
                         }}
                         disabled={deletingId !== null || togglingId !== null}
