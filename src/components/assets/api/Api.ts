@@ -90,23 +90,6 @@ export async function editTodo(
 
   await changeTodoCategory(String(id), categoryId ?? null);
 }
-
-export async function updateTodoStatus(
-  done: boolean,
-  id: number | string,
-  categoryId?: string | null,
-): Promise<void> {
-  const res = await fetch(`${API_URL}?id=eq.${id}`, {
-    method: "PATCH",
-    headers: { ...headers, Prefer: "return=representation" },
-    body: JSON.stringify({ done }),
-  });
-  handleApiError(res);
-  if (categoryId) {
-    await changeTodoCategory(String(id), categoryId);
-  }
-}
-
 export async function fetchCategories(): Promise<Category[]> {
   const res = await fetch(API_URL_CATEGORY, { headers });
   handleApiError(res);
@@ -148,18 +131,6 @@ export async function clearAllCategories(): Promise<void> {
       error instanceof Error ? error.message : "An unknown error occurred.",
     );
   }
-}
-
-export async function updateCategory(
-  id: string,
-  updatedCategory: CategoryInsert,
-): Promise<void> {
-  const res = await fetch(`${API_URL_CATEGORY}?id=eq.${id}`, {
-    method: "PATCH",
-    headers: { ...headers, Prefer: "return=representation" },
-    body: JSON.stringify(updatedCategory),
-  });
-  handleApiError(res);
 }
 
 export async function changeTodoCategory(

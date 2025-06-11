@@ -1,13 +1,31 @@
-import { useState, useRef, type TouchEvent } from "react";
+import { useRef, type TouchEvent } from "react";
 import { NavLink } from "react-router-dom";
+import { useSidebarStore } from "../stores/sidebarStore";
+import { useShallow } from "zustand/react/shallow";
 
 const Sidebar: React.FC = () => {
-  const [popupOpen, setPopupOpen] = useState<"overview" | "account" | null>(
-    null,
+  const {
+    popupOpen,
+    popupTranslateY,
+    isClosing,
+    hasRendered,
+    setPopupOpen,
+    setPopupTranslateY,
+    setIsClosing,
+    setHasRendered,
+  } = useSidebarStore(
+    useShallow((state) => ({
+      popupOpen: state.popupOpen,
+      popupTranslateY: state.popupTranslateY,
+      isClosing: state.isClosing,
+      hasRendered: state.hasRendered,
+      setPopupOpen: state.setPopupOpen,
+      setPopupTranslateY: state.setPopupTranslateY,
+      setIsClosing: state.setIsClosing,
+      setHasRendered: state.setHasRendered,
+    })),
   );
-  const [popupTranslateY, setPopupTranslateY] = useState(0);
-  const [isClosing, setIsClosing] = useState(false);
-  const [hasRendered, setHasRendered] = useState(false);
+
   const startYRef = useRef<number | null>(null);
 
   const openPopup = (section: "overview" | "account") => {
@@ -36,10 +54,12 @@ const Sidebar: React.FC = () => {
 
   const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
     if (startYRef.current === null) return;
+
     const currentY = e.touches[0].clientY;
     const diff = currentY - startYRef.current;
     if (diff < 0) {
-      setPopupTranslateY(diff / 3);
+      const translateY = Math.max(diff / 3, 0);
+      setPopupTranslateY(translateY);
     } else {
       setPopupTranslateY(diff);
     }
@@ -112,7 +132,9 @@ const Sidebar: React.FC = () => {
             }`}
             style={
               popupTranslateY !== 0 && !isClosing
-                ? { transform: `translateY(${popupTranslateY}px)` }
+                ? {
+                    transform: `translateY(${popupTranslateY}px)`,
+                  }
                 : undefined
             }
             onTouchStart={handleTouchStart}

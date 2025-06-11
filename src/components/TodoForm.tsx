@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import type { FormEvent } from "react";
 import type { Todo, Category, Props } from "./Types";
 import { fetchCategories, changeTodoCategory } from "./assets/api/Api";
-import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { validateAndNotify, notifySuccess } from "./UserNotifications";
+import { useTodoFormStore, useTodoFormUIStore } from "../stores/todoFormStore";
+import { useShallow } from "zustand/react/shallow";
 
 type TodoFormProps = Props & {
   todoToEdit?: Todo | null;
@@ -12,14 +13,49 @@ type TodoFormProps = Props & {
 };
 
 const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [hasChanged, setHasChanged] = useState(false);
+  const {
+    title,
+    date,
+    content,
+    category,
+    categories,
+    loadingCategories,
+    loadingSubmit,
+    hasChanged,
+    setTitle,
+    setDate,
+    setContent,
+    setCategory,
+    setCategories,
+    setLoadingCategories,
+    setLoadingSubmit,
+    setHasChanged,
+    setTodoToEdit,
+    resetForm,
+  } = useTodoFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      date: state.date,
+      content: state.content,
+      category: state.category,
+      categories: state.categories,
+      loadingCategories: state.loadingCategories,
+      loadingSubmit: state.loadingSubmit,
+      hasChanged: state.hasChanged,
+      setTitle: state.setTitle,
+      setDate: state.setDate,
+      setContent: state.setContent,
+      setCategory: state.setCategory,
+      setCategories: state.setCategories,
+      setLoadingCategories: state.setLoadingCategories,
+      setLoadingSubmit: state.setLoadingSubmit,
+      setHasChanged: state.setHasChanged,
+      setTodoToEdit: state.setTodoToEdit,
+      resetForm: state.resetForm,
+    })),
+  );
+
+  const { isOpen, isClosing, setOpen } = useTodoFormUIStore();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -32,21 +68,29 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       }
     };
     loadCategories();
-  }, []);
+  }, [setCategories, setLoadingCategories]);
 
   useEffect(() => {
+    setTodoToEdit(todoToEdit ?? null);
     if (todoToEdit) {
+      setOpen(true);
       setTitle(todoToEdit.title || "");
       setDate(todoToEdit.due_date || "");
       setContent(todoToEdit.content || "");
       setCategory(todoToEdit.category ? String(todoToEdit.category.id) : "");
     } else {
-      setTitle("");
-      setDate("");
-      setContent("");
-      setCategory("");
+      resetForm();
     }
-  }, [todoToEdit]);
+  }, [
+    resetForm,
+    setCategory,
+    setContent,
+    setDate,
+    setTitle,
+    setTodoToEdit,
+    todoToEdit,
+    setOpen,
+  ]);
 
   useEffect(() => {
     if (!todoToEdit) {
@@ -65,11 +109,20 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
       content === originalContent &&
       category === originalCategory;
     setHasChanged(!isSame);
-  }, [title, date, content, category, todoToEdit]);
+  }, [title, date, content, category, todoToEdit, setHasChanged]);
+
+  if (!isOpen && !isClosing) return null;
+
+  const closePopup = () => {
+    setOpen(false);
+    resetForm();
+    setTodoToEdit(null);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!validateAndNotify(title, date, content)) return;
+
     setLoadingSubmit(true);
     try {
       if (todoToEdit) {
@@ -94,13 +147,10 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           await changeTodoCategory(String(newTodo.id), category);
         }
         notifySuccess("Task created!");
-        setTitle("");
-        setDate("");
-        setContent("");
-        setCategory("");
+        resetForm();
       }
       setLoadingSubmit(false);
-      toggleTodoForm(false);
+      closePopup();
     } catch {
       setLoadingSubmit(false);
     }
@@ -113,84 +163,108 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
           <Loader />
         </div>
       ) : (
-        <form className="todo-form-popup" onSubmit={handleSubmit}>
-          <div className="title-formclose-btn">
-            <h1>{todoToEdit ? "Modify Task" : "Create Task"}</h1>
-            <button
-              type="button"
-              className="close-btn"
-              onClick={() => toggleTodoForm(false)}
-            >
-              ❌
-            </button>
-          </div>
-
-          <div className="form">
-            <p className="p-form">Title*</p>
-            <input
-              className="input-text"
-              type="text"
-              name="title"
-              placeholder="What will you do?"
-              autoComplete="off"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          <div className="form">
-            <p className="p-form">Category</p>
-            <select
-              className="input-text"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">No category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={String(cat.id)}>
-                  {cat.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form">
-            <p className="p-form">Date</p>
-            <input
-              className="input-text"
-              type="date"
-              name="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
-
-          <div className="form">
-            <p className="p-form">Description</p>
-            <textarea
-              className="p-description"
-              name="content"
-              placeholder="Add a description"
-              autoComplete="off"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
-
-          <button
-            className="simple-button"
-            type="submit"
-            disabled={loadingSubmit || Boolean(todoToEdit && !hasChanged)}
+        <div
+          className={`form-backdrop ${isOpen ? "open" : ""} ${
+            isClosing ? "closing" : ""
+          }`}
+          onClick={closePopup}
+          style={{
+            pointerEvents: isOpen || isClosing ? "auto" : "none",
+          }}
+        >
+          <form
+            className={`todo-form-popup ${isOpen ? "open" : ""} ${
+              isClosing ? "closing" : ""
+            }`}
+            onSubmit={handleSubmit}
+            onClick={(e) => e.stopPropagation()}
           >
-            {todoToEdit && !hasChanged
-              ? "No changes to save"
-              : todoToEdit
-                ? "Modify"
-                : "Create"}
-          </button>
-        </form>
+            <div className="title-formclose-btn">
+              <h1>{todoToEdit ? "Modify Task" : "Create Task"}</h1>
+              <button type="button" className="close-btn" onClick={closePopup}>
+                ❌
+              </button>
+            </div>
+
+            <div className="form">
+              <p className="p-form">Title*</p>
+              <input
+                className="input-text"
+                type="text"
+                placeholder="What will you do?"
+                autoComplete="off"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="form">
+              <p className="p-form">Category</p>
+              <select
+                className="input-text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">No category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={String(cat.id)}>
+                    {cat.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form">
+              <p className="p-form">Date</p>
+              <input
+                className="input-text"
+                type="date"
+                name="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+
+            <div className="form">
+              <p className="p-form">Description</p>
+              <textarea
+                className="p-description"
+                name="content"
+                placeholder="Add a description"
+                autoComplete="off"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
+
+            <button
+              className="simple-button"
+              type="submit"
+              disabled={loadingSubmit || Boolean(todoToEdit && !hasChanged)}
+            >
+              {todoToEdit && !hasChanged
+                ? "No changes to save"
+                : todoToEdit
+                  ? "Modify"
+                  : "Create"}
+            </button>
+          </form>
+        </div>
       )}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 4,
+        }}
+      ></div>
     </>
   );
 };

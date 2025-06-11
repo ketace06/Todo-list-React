@@ -1,8 +1,8 @@
-import { useState } from "react";
 import type { Props } from "./Types";
-import { toggleTodoForm } from "./TodoFormState";
 import Loader from "./Loader";
 import { notifyError, notifyInfo, notifySuccess } from "./UserNotifications";
+import { useTodoFormUIStore, useTodoListStore } from "../stores/todoFormStore";
+import { useShallow } from "zustand/react/shallow";
 
 type SortOptions = "recent" | "date" | "alphabetical" | "status" | "no-todos";
 
@@ -18,8 +18,16 @@ const TodoListSection = ({
   onToggleDone,
   sortBy,
 }: TodoListProps) => {
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [togglingId, setTogglingId] = useState<number | null>(null);
+  const { deletingId, togglingId, setDeletingId, setTogglingId } =
+    useTodoListStore(
+      useShallow((state) => ({
+        deletingId: state.deletingId,
+        togglingId: state.togglingId,
+        setDeletingId: state.setDeletingId,
+        setTogglingId: state.setTogglingId,
+      })),
+    );
+  const { setOpen } = useTodoFormUIStore();
 
   let filteredTodos = todos.slice();
   let statusTitle = "";
@@ -60,7 +68,7 @@ const TodoListSection = ({
       await onDeleteTodo(id);
       notifySuccess("The task has been successfully deleted!");
     } catch (err) {
-      notifyError("Error deleting task. Check your internet connection...");
+      notifyError("Error deleting task.");
       console.log(err);
     } finally {
       setDeletingId(null);
@@ -73,9 +81,7 @@ const TodoListSection = ({
       await onToggleDone(id, done);
       notifyInfo(`Task marked as ${done ? "done!" : "not done"}`);
     } catch (err) {
-      notifyError(
-        "Error updating task status. Check your internet connection...",
-      );
+      notifyError("Error updating task status.");
       console.log(err);
     } finally {
       setTogglingId(null);
@@ -85,12 +91,14 @@ const TodoListSection = ({
   return (
     <>
       {todos.length === 0 ? (
-        <span className="sort-title">No todos to display!</span>
+        <ul className="todo-list">
+          <span className="sort-title">No todos to display!</span>
+        </ul>
       ) : (
         <ul className="todo-list">
           <span className="sort-title">
             {sortBy === "recent"
-              ? "Recently added"
+              ? "Recently created"
               : sortBy === "date"
                 ? dueDateTitle
                 : sortBy === "alphabetical"
@@ -118,7 +126,7 @@ const TodoListSection = ({
                     />
                     <div className="task-info">
                       <span className="task-alphabetical">
-                        {todo.title}{" "}
+                        {todo.title}
                         {categoryColor && (
                           <span
                             style={{
@@ -156,7 +164,7 @@ const TodoListSection = ({
                         className="Edit"
                         type="button"
                         onClick={() => {
-                          toggleTodoForm(true);
+                          setOpen(true);
                           onEditTodo(todo);
                         }}
                         disabled={deletingId !== null || togglingId !== null}

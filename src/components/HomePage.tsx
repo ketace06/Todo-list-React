@@ -1,26 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import TodoForm from "./TodoForm";
 import TodoBtn from "./TodoBtn";
 import { TodoListSection, type SortOptions } from "./TodoListSection";
-import { useTodos } from "./CustomHook";
-import type { Todo } from "./Types";
+import { useTodosStore } from "../stores/todosStateStore";
+import { Todo } from "./Types";
+import { useShallow } from "zustand/react/shallow";
+import { useTodoFormUIStore } from "../stores/todoFormStore";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
+
+  const {
+    todos,
+    handleAddTodo,
+    handleDeleteTodo,
+    handleEditTodo,
+    todoToEdit,
+    setTodoToEdit,
+    sortBy,
+    setSortBy,
+    loadTodos,
+  } = useTodosStore(
+    useShallow((state) => ({
+      todos: state.todos,
+      handleAddTodo: state.handleAddTodo,
+      handleDeleteTodo: state.handleDeleteTodo,
+      handleEditTodo: state.handleEditTodo,
+      todoToEdit: state.todoToEdit,
+      setTodoToEdit: state.setTodoToEdit,
+      sortBy: state.sortBy,
+      setSortBy: state.setSortBy,
+      loadTodos: state.loadTodos,
+    })),
+  );
+
+  const { setOpen } = useTodoFormUIStore();
+
+  useEffect(() => {
+    setOpen(false);
+    setTodoToEdit(null);
+  }, [setOpen, setTodoToEdit]);
+
+  useEffect(() => {
+    loadTodos();
+  }, [loadTodos]);
 
   const sortParam = searchParams.get("sort") as SortOptions | null;
-  const [sortBy, setSortBy] = useState<SortOptions>(sortParam || "recent");
-
-  const { todos, handleAddTodo, handleDeleteTodo, handleEditTodo } = useTodos();
 
   useEffect(() => {
     if (sortBy !== sortParam) {
-      searchParams.set("sort", sortBy);
-      setSearchParams(searchParams);
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.set("sort", sortBy);
+      setSearchParams(newParams);
     }
-  }, [searchParams, setSearchParams, sortBy, sortParam]);
+  }, [sortBy, sortParam, searchParams, setSearchParams]);
 
   return (
     <div className="home-page">
@@ -49,7 +83,7 @@ const HomePage = () => {
           onDeleteTodo={handleDeleteTodo}
           onEditTodo={(todo) => {
             if (todo.id !== undefined) {
-              setTodoToEdit(todo as Todo);
+              setTodoToEdit({ ...(todo as Todo) });
             }
           }}
           onToggleDone={async (id: number, done: boolean) => {
