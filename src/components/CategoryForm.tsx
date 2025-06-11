@@ -68,7 +68,6 @@ const CategoryForm = ({ onClose, onCreate }: CategoryFormProps) => {
             <input
               className="input-text"
               type="text"
-              name="title"
               placeholder="Enter category name"
               autoComplete="off"
               value={title}
@@ -79,7 +78,6 @@ const CategoryForm = ({ onClose, onCreate }: CategoryFormProps) => {
             <input
               className="input-color"
               type="color"
-              name="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
               required

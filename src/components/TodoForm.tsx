@@ -191,7 +191,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
               <input
                 className="input-text"
                 type="text"
-                name="title"
                 placeholder="What will you do?"
                 autoComplete="off"
                 value={title}
@@ -203,7 +202,6 @@ const TodoForm = ({ onAddTodo, onEditTodo, todoToEdit }: TodoFormProps) => {
               <p className="p-form">Category</p>
               <select
                 className="input-text"
-                name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >

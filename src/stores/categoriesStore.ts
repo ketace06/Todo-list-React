@@ -6,7 +6,11 @@ import {
   clearAllCategories,
 } from "../components/assets/api/Api";
 import type { Category, CategoryInsert } from "../components/Types";
-import { notifyError, notifySuccess } from "../components/UserNotifications";
+import {
+  notifyError,
+  notifyInfo,
+  notifySuccess,
+} from "../components/UserNotifications";
 
 type CategoriesState = {
   categories: Category[];
@@ -50,13 +54,13 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
       notifySuccess("Category created!");
     } catch (error) {
       console.error("Failed to add category:", error);
-      notifyError("Error creating category. Check your internet connection...");
+      notifyError("Error creating category.");
     }
   },
 
   clearCategories: async () => {
     if (get().categories.length === 0) {
-      notifySuccess("You haven't created categories...");
+      notifyInfo("You haven't created categories...");
       return;
     }
     set({ loading: true });

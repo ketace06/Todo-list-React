@@ -68,7 +68,7 @@ const TodoListSection = ({
       await onDeleteTodo(id);
       notifySuccess("The task has been successfully deleted!");
     } catch (err) {
-      notifyError("Error deleting task. Check your internet connection...");
+      notifyError("Error deleting task.");
       console.log(err);
     } finally {
       setDeletingId(null);
@@ -81,9 +81,7 @@ const TodoListSection = ({
       await onToggleDone(id, done);
       notifyInfo(`Task marked as ${done ? "done!" : "not done"}`);
     } catch (err) {
-      notifyError(
-        "Error updating task status. Check your internet connection...",
-      );
+      notifyError("Error updating task status.");
       console.log(err);
     } finally {
       setTogglingId(null);
@@ -128,7 +126,7 @@ const TodoListSection = ({
                     />
                     <div className="task-info">
                       <span className="task-alphabetical">
-                        {todo.title}{" "}
+                        {todo.title}
                         {categoryColor && (
                           <span
                             style={{
